@@ -21,11 +21,12 @@ import InputAdornment from '@mui/material/InputAdornment'
 import { AutocompleteRenderInputParams } from '@mui/material/Autocomplete'
 
 // ** Third Party Imports
-import axios from 'axios'
+
 
 // ** Types Imports
 import { AppBarSearchType } from 'src/@fake-db/types'
 import { Settings } from 'src/@core/context/settingsContext'
+import { searchData } from 'src/data/app-bar-search'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -369,17 +370,13 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
 
   // Get all data using API
   useEffect(() => {
-    axios
-      .get('/app-bar/search', {
-        params: { q: searchValue }
-      })
-      .then(response => {
-        if (response.data && response.data.length) {
-          setOptions(response.data)
-        } else {
-          setOptions([])
-        }
-      })
+    if (searchValue && searchValue.length > 0) {
+      const q = searchValue.toLowerCase()
+      const filteredData = searchData.filter(obj => obj.title.toLowerCase().includes(q) || obj.category.includes(q))
+      setOptions(filteredData)
+    } else {
+      setOptions([])
+    }
   }, [searchValue])
 
   useEffect(() => {

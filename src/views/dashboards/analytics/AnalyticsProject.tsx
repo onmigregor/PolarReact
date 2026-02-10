@@ -14,11 +14,12 @@ import LinearProgress from '@mui/material/LinearProgress'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Third Party Imports
-import axios from 'axios'
+
 
 // ** Types Imports
 import { ThemeColor } from 'src/@core/layouts/types'
 import { ProjectTableRowType } from 'src/@fake-db/types'
+import { projectTable } from 'src/data/profile-table'
 
 // ** Custom Components Imports
 import OptionsMenu from 'src/@core/components/option-menu'
@@ -159,9 +160,19 @@ const AnalyticsProject = () => {
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 })
 
   useEffect(() => {
-    axios.get('/pages/profile-table', { params: { q: value } }).then(response => {
-      setData(response.data)
-    })
+    if (value && value.length > 0) {
+        const q = value.toLowerCase()
+        const filteredData = projectTable.filter(row => {
+            return (
+              (row.name && row.name.toLowerCase().includes(q)) ||
+              (row.date && row.date.toLowerCase().includes(q)) ||
+              (row.leader && row.leader.toLowerCase().includes(q))
+            )
+          })
+        setData(filteredData as any)
+    } else {
+        setData(projectTable as any)
+    }
   }, [value])
 
   const handleFilter = (val: string) => {
