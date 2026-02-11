@@ -27,6 +27,13 @@ const navigation = (): VerticalNavItemsType => {
       sectionTitle: 'Apps & Pages'
     },
     {
+      title: 'Analytics',
+      icon: 'tabler:chart-bar',
+      path: '/analytics',
+      action: 'read',
+      subject: 'analytics'
+    },
+    {
       title: 'Email',
       icon: 'tabler:mail',
       path: '/apps/email'
@@ -350,7 +357,7 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'tabler:brand-tabler'
     },
     {
-      
+
       title: 'Cards',
       icon: 'tabler:id',
       children: [
