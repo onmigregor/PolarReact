@@ -34,6 +34,20 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'analytics'
     },
     {
+      title: 'Regiones',
+      icon: 'tabler:map-pin',
+      path: '/regions',
+      action: 'read',
+      subject: 'regions'
+    },
+    {
+      title: 'Usuarios',
+      icon: 'tabler:users',
+      path: '/users',
+      action: 'read',
+      subject: 'admin'
+    },
+    {
       title: 'Email',
       icon: 'tabler:mail',
       path: '/apps/email'
