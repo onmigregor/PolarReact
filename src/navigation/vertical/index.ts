@@ -41,6 +41,13 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'regions'
     },
     {
+      title: 'Cuentas',
+      icon: 'tabler:route',
+      path: '/company-routes',
+      action: 'read',
+      subject: 'regions'
+    },
+    {
       title: 'Usuarios',
       icon: 'tabler:users',
       path: '/users',

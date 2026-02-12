@@ -176,6 +176,11 @@ const UsersPage = () => {
       <PageHeader
         title={<Typography variant='h4'>Gestión de Usuarios</Typography>}
         subtitle={<Typography sx={{ color: 'text.secondary' }}>Administra los accesos y roles de tu equipo</Typography>}
+        action={
+          <Button variant='contained' startIcon={<Icon icon='tabler:plus' />} onClick={handleAdd}>
+            Nuevo Usuario
+          </Button>
+        }
       />
 
       <Card sx={{ mt: 6 }}>
@@ -190,11 +195,6 @@ const UsersPage = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
-          headerAction={
-            <Button variant='contained' startIcon={<Icon icon='tabler:plus' />} onClick={handleAdd}>
-              Nuevo Usuario
-            </Button>
-          }
         />
       </Card>
 

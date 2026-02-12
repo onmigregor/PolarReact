@@ -19,6 +19,15 @@ const regionService = {
   },
 
   /**
+   * Get all regions for selectors
+   */
+  getAllRegions: async (): Promise<SingleResponse<RegionType[]>> => {
+    const response = await axios.get('/regions/all')
+
+    return response.data
+  },
+
+  /**
    * Create a new region
    */
   store: async (data: RegionFormData): Promise<SingleResponse<RegionType>> => {

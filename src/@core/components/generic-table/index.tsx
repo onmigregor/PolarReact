@@ -77,24 +77,33 @@ const GenericTable = <T extends { id: string | number }>({
   return (
     <Card>
       <CardHeader
-        title={title}
-        action={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <CustomTextField
-              size='small'
-              placeholder='Buscar...'
-              value={searchQuery}
-              onChange={e => onSearchChange(e.target.value)}
-              sx={{ minWidth: 250 }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <Icon icon='tabler:search' fontSize={20} />
-                  </InputAdornment>
-                )
-              }}
-            />
-            {headerAction}
+        sx={{
+          py: 4,
+          px: 5,
+          '& .MuiCardHeader-content': { width: '100%' },
+          '& .MuiCardHeader-action': { display: 'none' } // Hide default action area
+        }}
+        title={
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'stretch', md: 'center' }, gap: 4 }}>
+            {title && <Typography variant='h6' sx={{ mr: 2 }}>{title}</Typography>}
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'stretch', md: 'center' }, gap: 4, flex: 1 }}>
+              <CustomTextField
+                fullWidth
+                size='small'
+                placeholder='Buscar...'
+                value={searchQuery}
+                onChange={e => onSearchChange(e.target.value)}
+                sx={{ width: { xs: '100%', md: 300 }, mt: 5 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <Icon icon='tabler:search' fontSize={20} />
+                    </InputAdornment>
+                  )
+                }}
+              />
+              {headerAction}
+            </Box>
           </Box>
         }
       />

@@ -20,9 +20,12 @@ import RegionFormDialog from './components/RegionFormDialog'
 import DeleteConfirmDialog from './components/DeleteConfirmDialog'
 import { RegionType, RegionFormData } from './types'
 
-// ** Hook & Generic Component
-import { useDataTable } from 'src/hooks/useDataTable'
+// ** Custom Components Imports
 import GenericTable, { Column } from 'src/@core/components/generic-table'
+import PageHeader from 'src/@core/components/page-header'
+
+// ** Hooks
+import { useDataTable } from 'src/hooks/useDataTable'
 
 const RegionsPage = () => {
   // ** Hooks
@@ -145,24 +148,27 @@ const RegionsPage = () => {
   return (
     <Box>
       {/* Page Header */}
-      <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-        <Box>
+      <PageHeader
+        title={
           <Typography variant='h4' sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Icon icon='tabler:map-pin' fontSize={28} />
             Regiones
           </Typography>
+        }
+        subtitle={
           <Typography variant='body2' color='text.secondary'>
             Gestión de regiones del sistema
           </Typography>
-        </Box>
-        <Button variant='contained' startIcon={<Icon icon='tabler:plus' />} onClick={handleOpenAdd}>
-          Agregar Región
-        </Button>
-      </Box>
+        }
+        action={
+          <Button variant='contained' startIcon={<Icon icon='tabler:plus' />} onClick={handleOpenAdd}>
+            Agregar Región
+          </Button>
+        }
+      />
 
       {/* Table Card */}
       <GenericTable
-        title='Listado de Regiones'
         columns={columns}
         data={data}
         loading={loading}

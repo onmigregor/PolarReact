@@ -4,6 +4,7 @@ interface FetchDataParams {
   page: number
   per_page: number
   query?: string
+  [key: string]: any
 }
 
 interface Meta {
@@ -28,16 +29,24 @@ export const useDataTable = <T,>({ fetchData, initialRowsPerPage = 10 }: UseData
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage)
   const [searchQuery, setSearchQuery] = useState('')
+  const [filters, setFilters] = useState<Record<string, any>>({})
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
 
   const fetchItems = useCallback(
-    async (currentPage: number, perPage: number, query: string) => {
+    async (currentPage: number, perPage: number, query: string, currentFilters: Record<string, any>) => {
       setLoading(true)
       try {
+        console.log('Fetching with params:', {
+          page: currentPage + 1,
+          per_page: perPage,
+          query: query || undefined,
+          ...currentFilters
+        })
         const response = await fetchData({
           page: currentPage + 1, // API is 1-indexed
           per_page: perPage,
-          query: query || undefined
+          query: query || undefined,
+          ...currentFilters
         })
         setData(response.data)
         setTotal(response.meta.total)
@@ -52,7 +61,7 @@ export const useDataTable = <T,>({ fetchData, initialRowsPerPage = 10 }: UseData
 
   // Initial load + refetch on page/perPage changes
   useEffect(() => {
-    fetchItems(page, rowsPerPage, searchQuery)
+    fetchItems(page, rowsPerPage, searchQuery, filters)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, fetchItems])
 
@@ -72,12 +81,19 @@ export const useDataTable = <T,>({ fetchData, initialRowsPerPage = 10 }: UseData
 
     const timeout = setTimeout(() => {
       setPage(0)
-      fetchItems(0, rowsPerPage, value)
+      fetchItems(0, rowsPerPage, value, filters)
     }, 400)
     setSearchTimeout(timeout)
   }
 
-  const refresh = () => fetchItems(page, rowsPerPage, searchQuery)
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const updatedFilters = { ...filters, ...newFilters }
+    setFilters(updatedFilters)
+    setPage(0)
+    fetchItems(0, rowsPerPage, searchQuery, updatedFilters)
+  }
+
+  const refresh = () => fetchItems(page, rowsPerPage, searchQuery, filters)
 
   return {
     // State
@@ -87,11 +103,13 @@ export const useDataTable = <T,>({ fetchData, initialRowsPerPage = 10 }: UseData
     page,
     rowsPerPage,
     searchQuery,
+    filters,
 
     // Handlers
     handleChangePage,
     handleChangeRowsPerPage,
     handleSearchChange,
+    handleFilterChange,
     refresh,
 
     // Helper for Tables
