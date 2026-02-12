@@ -3,6 +3,8 @@ import { useState, useMemo } from 'react'
 
 // ** MUI Import
 import Grid from '@mui/material/Grid'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 
 // ** Demo Component Imports
 import AnalyticsFilterHeader, { generateMonthOptions } from 'src/views/dashboards/analytics/AnalyticsFilterHeader'
@@ -66,6 +68,15 @@ const AnalyticsDashboard = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <SalesByRouteChart startDate={startDate} endDate={endDate} />
+            </Grid>
+
+            {/* Divider */}
+            <Grid item xs={12}>
+              <Divider sx={{ my: 4 }}>
+                <Typography variant='caption' sx={{ color: 'text.disabled', textTransform: 'uppercase' }}>
+                  Otras Métricas
+                </Typography>
+              </Divider>
             </Grid>
 
             {/* Original Analytics Components */}

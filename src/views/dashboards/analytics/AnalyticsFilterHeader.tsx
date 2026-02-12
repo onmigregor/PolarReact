@@ -73,7 +73,7 @@ const AnalyticsFilterHeader = ({ selectedMonth, onMonthChange }: Props) => {
   return (
     <Card>
       <CardHeader
-        title='Filtros de Análisis'
+        title='Resumen Comercial'
         action={
           <Box sx={{ width: { xs: '100%', md: 300 }, flexShrink: 0 }}>
             <CustomTextField
