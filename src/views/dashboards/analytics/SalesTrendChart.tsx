@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -10,16 +10,9 @@ import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTheme } from '@mui/material/styles'
 
-// ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
-import MenuItem from '@mui/material/MenuItem'
-
 // ** Third Party Imports
 import { ApexOptions } from 'apexcharts'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
-
-// ** Util Import
-
 
 // ** Axios Import
 import axios from 'src/configs/axios'
@@ -36,71 +29,29 @@ interface DailySalesData {
   total_pending: number
 }
 
-interface MonthOption {
-  label: string
-  value: string // format: YYYY-MM
+interface Props {
   startDate: string
   endDate: string
 }
 
-const generateMonthOptions = (): MonthOption[] => {
-  const options: MonthOption[] = []
-  const now = new Date()
-
-  for (let i = 0; i < 12; i++) {
-    const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
-    const year = date.getFullYear()
-    const month = date.getMonth() // 0-indexed
-
-    const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ]
-
-    const label = `${monthNames[month]} ${year}`
-    const value = `${year}-${String(month + 1).padStart(2, '0')}`
-
-    // Start date: first day of the month
-    const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`
-
-    // End date: for current month, use today; for past months, use last day
-    let endDate: string
-    if (i === 0) {
-      // Current month: only up to today
-      endDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-    } else {
-      // Past months: last day of the month
-      const lastDay = new Date(year, month + 1, 0).getDate()
-      endDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
-    }
-
-    options.push({ label, value, startDate, endDate })
-  }
-
-  return options
-}
-
-const SalesTrendChart = () => {
+const SalesTrendChart = ({ startDate, endDate }: Props) => {
   // ** Hooks
   const theme = useTheme()
 
   // ** States
   const [loading, setLoading] = useState(false)
   const [salesData, setSalesData] = useState<DailySalesData[]>([])
-  const monthOptions = useMemo(() => generateMonthOptions(), [])
-  const [selectedMonth, setSelectedMonth] = useState(monthOptions[0]?.value || '')
 
   // ** Fetch data
   useEffect(() => {
     const fetchData = async () => {
-      const selected = monthOptions.find(m => m.value === selectedMonth)
-      if (!selected) return
+      if (!startDate || !endDate) return
 
       setLoading(true)
       try {
         const response = await axios.post('/analytics/reports/daily-sales-trend', {
-          start_date: selected.startDate,
-          end_date: selected.endDate
+          start_date: startDate,
+          end_date: endDate
         })
 
         if (response.data.success) {
@@ -115,7 +66,7 @@ const SalesTrendChart = () => {
     }
 
     fetchData()
-  }, [selectedMonth, monthOptions])
+  }, [startDate, endDate])
 
   // ** Derived stats
   const totalTransactions = salesData.reduce((sum, d) => sum + d.total_transactions, 0)
@@ -264,26 +215,6 @@ const SalesTrendChart = () => {
             </Box>
           </Box>
         }
-        action={
-          <Box sx={{ width: { xs: '100%', md: 300 }, flexShrink: 0 }}>
-            <CustomTextField
-              select
-              fullWidth
-              value={selectedMonth}
-              onChange={e => setSelectedMonth(e.target.value)}
-              size='small'
-            >
-              {monthOptions.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </CustomTextField>
-          </Box>
-        }
-        sx={{
-          '& .MuiCardHeader-action': { alignSelf: 'flex-start', mt: 0 }
-        }}
       />
       <CardContent>
         {loading ? (
