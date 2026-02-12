@@ -2,6 +2,7 @@
 import Grid from '@mui/material/Grid'
 
 // ** Demo Component Imports
+import SalesTrendChart from 'src/views/dashboards/analytics/SalesTrendChart'
 import AnalyticsProject from 'src/views/dashboards/analytics/AnalyticsProject'
 import AnalyticsOrderVisits from 'src/views/dashboards/analytics/AnalyticsOrderVisits'
 import AnalyticsTotalEarning from 'src/views/dashboards/analytics/AnalyticsTotalEarning'
@@ -22,6 +23,9 @@ const AnalyticsDashboard = () => {
     <ApexChartWrapper>
       <KeenSliderWrapper>
         <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <SalesTrendChart />
+          </Grid>
           <Grid item xs={12} lg={6}>
             <AnalyticsWebsiteAnalyticsSlider />
           </Grid>
