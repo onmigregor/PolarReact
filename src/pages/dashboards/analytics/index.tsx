@@ -11,6 +11,8 @@ import AnalyticsFilterHeader, { generateMonthOptions } from 'src/views/dashboard
 import SalesTrendChart from 'src/views/dashboards/analytics/SalesTrendChart'
 import TopProductsChart from 'src/views/dashboards/analytics/TopProductsChart'
 import SalesByRouteChart from 'src/views/dashboards/analytics/SalesByRouteChart'
+import TopGroupsByLitersChart from 'src/views/dashboards/analytics/TopGroupsByLitersChart'
+import TopGroupsByKilosChart from 'src/views/dashboards/analytics/TopGroupsByKilosChart'
 
 import AnalyticsProject from 'src/views/dashboards/analytics/AnalyticsProject'
 import AnalyticsOrderVisits from 'src/views/dashboards/analytics/AnalyticsOrderVisits'
@@ -68,6 +70,14 @@ const AnalyticsDashboard = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <SalesByRouteChart startDate={startDate} endDate={endDate} />
+            </Grid>
+
+            {/* Grupos por Litros y por Kilos */}
+            <Grid item xs={12} md={6}>
+              <TopGroupsByLitersChart startDate={startDate} endDate={endDate} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TopGroupsByKilosChart startDate={startDate} endDate={endDate} />
             </Grid>
 
             {/* Divider */}
