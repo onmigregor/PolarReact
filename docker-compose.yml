@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    container_name: polar_react
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api.polar.localhost:8090/api
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "api.polar.localhost:host-gateway"
+    restart: unless-stopped
