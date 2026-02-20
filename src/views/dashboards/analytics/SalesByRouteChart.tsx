@@ -37,8 +37,7 @@ interface SalesByRouteItem {
 }
 
 interface Props {
-  startDate: string
-  endDate: string
+  filters: any
 }
 
 const COLORS = [
@@ -86,7 +85,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
   )
 }
 
-const SalesByRouteChart = ({ startDate, endDate }: Props) => {
+const SalesByRouteChart = ({ filters }: Props) => {
   // ** States
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<SalesByRouteItem[]>([])
@@ -94,14 +93,11 @@ const SalesByRouteChart = ({ startDate, endDate }: Props) => {
   // ** Fetch data
   useEffect(() => {
     const fetchData = async () => {
-      if (!startDate || !endDate) return
+      if (!filters.start_date || !filters.end_date) return
 
       setLoading(true)
       try {
-        const response = await axios.post('/analytics/reports/sales-by-route', {
-          start_date: startDate,
-          end_date: endDate
-        })
+        const response = await axios.post('/analytics/reports/sales-by-route', filters)
 
         if (response.data.success) {
           setData(response.data.data)
@@ -115,7 +111,7 @@ const SalesByRouteChart = ({ startDate, endDate }: Props) => {
     }
 
     fetchData()
-  }, [startDate, endDate])
+  }, [filters])
 
   const totalUsd = data.reduce((sum, item) => sum + item.total_billed_usd, 0)
 

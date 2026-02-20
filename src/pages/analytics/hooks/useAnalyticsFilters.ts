@@ -1,10 +1,10 @@
 // ** Custom hook for managing analytics filter state
 import { useState, useEffect, useCallback } from 'react'
-import { format, subMonths } from 'date-fns'
+import { format, startOfMonth } from 'date-fns'
 import analyticsService from '../services/analyticsService'
-import { ReportFilters, AvailableFilters, ClientOption, ProductOption } from '../types'
+import { ReportFilters, AvailableFilters, ClientOption, ProductOption, RegionOption } from '../types'
 
-const defaultStartDate = subMonths(new Date(), 3)
+const defaultStartDate = startOfMonth(new Date())
 const defaultEndDate = new Date()
 
 export const useAnalyticsFilters = () => {
@@ -21,6 +21,7 @@ export const useAnalyticsFilters = () => {
   const [startDate, setStartDate] = useState<Date | null>(defaultStartDate)
   const [endDate, setEndDate] = useState<Date | null>(defaultEndDate)
   const [selectedClients, setSelectedClients] = useState<ClientOption[]>([])
+  const [selectedRegions, setSelectedRegions] = useState<RegionOption[]>([])
   const [selectedProducts, setSelectedProducts] = useState<ProductOption[]>([])
   const [selectedRoutes, setSelectedRoutes] = useState<string[]>([])
 
@@ -31,6 +32,13 @@ export const useAnalyticsFilters = () => {
     setStartDate(start)
     setEndDate(end)
   }, [])
+
+  // Filter clients based on selected regions (Cascading Logic)
+  const filteredClientOptions = availableFilters.clients.filter(client => {
+    if (selectedRegions.length === 0) return true
+
+    return client.region_id && selectedRegions.some(r => r.id === client.region_id)
+  })
 
   // Load filter options on mount
   useEffect(() => {
@@ -58,6 +66,9 @@ export const useAnalyticsFilters = () => {
     if (selectedClients.length > 0) {
       filters.client_ids = selectedClients.map(c => c.id)
     }
+    if (selectedRegions.length > 0) {
+      filters.region_ids = selectedRegions.map(r => r.id)
+    }
     if (selectedProducts.length > 0) {
       filters.product_skus = selectedProducts.map(p => p.sku)
     }
@@ -66,7 +77,7 @@ export const useAnalyticsFilters = () => {
     }
 
     return filters
-  }, [startDate, endDate, selectedClients, selectedProducts, selectedRoutes])
+  }, [startDate, endDate, selectedClients, selectedRegions, selectedProducts, selectedRoutes])
 
   return {
     // Filter options
@@ -81,6 +92,9 @@ export const useAnalyticsFilters = () => {
     // Selection state
     selectedClients,
     setSelectedClients,
+    filteredClientOptions,
+    selectedRegions,
+    setSelectedRegions,
     selectedProducts,
     setSelectedProducts,
     selectedRoutes,

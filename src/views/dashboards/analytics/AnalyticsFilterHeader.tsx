@@ -2,17 +2,30 @@
 import { useMemo } from 'react'
 
 // ** MUI Imports
-import Box from '@mui/material/Box' // Box component
-import Card from '@mui/material/Card' // Card component
-import CardHeader from '@mui/material/CardHeader' // CardHeader component
-import MenuItem from '@mui/material/MenuItem'    // MenuItem component
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardContent from '@mui/material/CardContent'
+import MenuItem from '@mui/material/MenuItem'
+import Autocomplete from '@mui/material/Autocomplete'
+import CircularProgress from '@mui/material/CircularProgress'
+import Grid from '@mui/material/Grid'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
+// ** Types
+import { AvailableFilters, ClientOption, RegionOption } from 'src/pages/analytics/types'
+
 interface Props {
   selectedMonth: string
   onMonthChange: (value: string, startDate: string, endDate: string) => void
+  availableFilters: AvailableFilters
+  filtersLoading: boolean
+  selectedRegions: RegionOption[]
+  onRegionsChange: (regions: RegionOption[]) => void
+  selectedClients: ClientOption[]
+  onClientsChange: (clients: ClientOption[]) => void
+  filteredClientOptions: ClientOption[]
 }
 
 interface MonthOption {
@@ -60,7 +73,17 @@ const generateMonthOptions = (): MonthOption[] => {
   return options
 }
 
-const AnalyticsFilterHeader = ({ selectedMonth, onMonthChange }: Props) => {
+const AnalyticsFilterHeader = ({
+  selectedMonth,
+  onMonthChange,
+  availableFilters,
+  filtersLoading,
+  selectedRegions,
+  onRegionsChange,
+  selectedClients,
+  onClientsChange,
+  filteredClientOptions
+}: Props) => {
   const monthOptions = useMemo(() => generateMonthOptions(), [])
 
   const handleChange = (newValue: string) => {
@@ -72,10 +95,11 @@ const AnalyticsFilterHeader = ({ selectedMonth, onMonthChange }: Props) => {
 
   return (
     <Card>
-      <CardHeader
-        title='Resumen Comercial'
-        action={
-          <Box sx={{ width: { xs: '100%', md: 300 }, flexShrink: 0 }}>
+      <CardHeader title='Resumen Comercial' sx={{ pb: 0 }} />
+      <CardContent>
+        <Grid container spacing={4} alignItems='flex-end'>
+          {/* Selector de Mes */}
+          <Grid item xs={12} md={3}>
             <CustomTextField
               select
               fullWidth
@@ -91,9 +115,73 @@ const AnalyticsFilterHeader = ({ selectedMonth, onMonthChange }: Props) => {
                 </MenuItem>
               ))}
             </CustomTextField>
-          </Box>
-        }
-      />
+          </Grid>
+
+          {/* Selector de Regiones */}
+          <Grid item xs={12} md={3}>
+            <Autocomplete
+              multiple
+              size='small'
+              options={availableFilters.regions}
+              getOptionLabel={option => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={selectedRegions}
+              onChange={(_, value) => onRegionsChange(value)}
+              loading={filtersLoading}
+              limitTags={1}
+              disableCloseOnSelect
+              renderInput={params => (
+                <CustomTextField
+                  {...params}
+                  label='Regiones'
+                  placeholder='Todas'
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {filtersLoading ? <CircularProgress size={16} /> : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    )
+                  }}
+                />
+              )}
+            />
+          </Grid>
+
+          {/* Selector de Clientes */}
+          <Grid item xs={12} md={3}>
+            <Autocomplete
+              multiple
+              size='small'
+              options={filteredClientOptions}
+              getOptionLabel={option => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={selectedClients}
+              onChange={(_, value) => onClientsChange(value)}
+              loading={filtersLoading}
+              limitTags={1}
+              disableCloseOnSelect
+              renderInput={params => (
+                <CustomTextField
+                  {...params}
+                  label='Clientes'
+                  placeholder='Todos'
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {filtersLoading ? <CircularProgress size={16} /> : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    )
+                  }}
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+      </CardContent>
     </Card>
   )
 }

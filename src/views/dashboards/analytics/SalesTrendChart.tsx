@@ -30,11 +30,10 @@ interface DailySalesData {
 }
 
 interface Props {
-  startDate: string
-  endDate: string
+  filters: any
 }
 
-const SalesTrendChart = ({ startDate, endDate }: Props) => {
+const SalesTrendChart = ({ filters }: Props) => {
   // ** Hooks
   const theme = useTheme()
 
@@ -45,14 +44,11 @@ const SalesTrendChart = ({ startDate, endDate }: Props) => {
   // ** Fetch data
   useEffect(() => {
     const fetchData = async () => {
-      if (!startDate || !endDate) return
+      if (!filters.start_date || !filters.end_date) return
 
       setLoading(true)
       try {
-        const response = await axios.post('/analytics/reports/daily-sales-trend', {
-          start_date: startDate,
-          end_date: endDate
-        })
+        const response = await axios.post('/analytics/reports/daily-sales-trend', filters)
 
         if (response.data.success) {
           setSalesData(response.data.data)
@@ -66,7 +62,7 @@ const SalesTrendChart = ({ startDate, endDate }: Props) => {
     }
 
     fetchData()
-  }, [startDate, endDate])
+  }, [filters])
 
   // ** Derived stats
   const totalTransactions = salesData.reduce((sum, d) => sum + d.total_transactions, 0)

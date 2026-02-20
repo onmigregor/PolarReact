@@ -5,6 +5,7 @@ export interface ReportFilters {
   start_date: string
   end_date: string
   client_ids?: number[]
+  region_ids?: number[]
   product_skus?: string[]
   routes?: string[]
 }
@@ -13,6 +14,11 @@ export interface ClientOption {
   id: number
   name: string
   region_id: number | null
+}
+
+export interface RegionOption {
+  id: number
+  name: string
 }
 
 export interface RegionOption {

@@ -34,8 +34,7 @@ interface TopProductItem {
 }
 
 interface Props {
-  startDate: string
-  endDate: string
+  filters: any
 }
 
 const COLORS = [
@@ -73,7 +72,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   return null
 }
 
-const TopProductsChart = ({ startDate, endDate }: Props) => {
+const TopProductsChart = ({ filters }: Props) => {
   // ** States
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<TopProductItem[]>([])
@@ -81,13 +80,12 @@ const TopProductsChart = ({ startDate, endDate }: Props) => {
   // ** Fetch data
   useEffect(() => {
     const fetchData = async () => {
-      if (!startDate || !endDate) return
+      if (!filters.start_date || !filters.end_date) return
 
       setLoading(true)
       try {
         const response = await axios.post('/analytics/reports/top-products', {
-          start_date: startDate,
-          end_date: endDate,
+          ...filters,
           limit: 10
         })
 
@@ -103,7 +101,7 @@ const TopProductsChart = ({ startDate, endDate }: Props) => {
     }
 
     fetchData()
-  }, [startDate, endDate])
+  }, [filters])
 
   const chartData = data.map(item => ({
     ...item,

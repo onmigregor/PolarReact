@@ -15,6 +15,9 @@ import TopGroupsByLitersChart from 'src/views/dashboards/analytics/TopGroupsByLi
 import TopGroupsByKilosChart from 'src/views/dashboards/analytics/TopGroupsByKilosChart'
 import ClientsByTenantChart from 'src/views/dashboards/analytics/ClientsByTenantChart'
 
+// ** Hook Import
+import { useAnalyticsFilters } from 'src/pages/analytics/hooks/useAnalyticsFilters'
+
 import AnalyticsProject from 'src/views/dashboards/analytics/AnalyticsProject'
 import AnalyticsOrderVisits from 'src/views/dashboards/analytics/AnalyticsOrderVisits'
 import AnalyticsTotalEarning from 'src/views/dashboards/analytics/AnalyticsTotalEarning'
@@ -32,18 +35,26 @@ import RechartsWrapper from 'src/@core/styles/libs/recharts'
 import CardStatsWithAreaChart from 'src/@core/components/card-statistics/card-stats-with-area-chart'
 
 const AnalyticsDashboard = () => {
+  // ** Hooks
+  const {
+    availableFilters,
+    filtersLoading,
+    selectedClients,
+    setSelectedClients,
+    filteredClientOptions,
+    selectedRegions,
+    setSelectedRegions,
+    handleDateRangeChange,
+    buildFilters
+  } = useAnalyticsFilters()
+
   // ** States
   const monthOptions = useMemo(() => generateMonthOptions(), [])
   const [selectedMonth, setSelectedMonth] = useState(monthOptions[0]?.value || '')
 
-  // Initialize with the first month option (current month)
-  const [startDate, setStartDate] = useState(monthOptions[0]?.startDate || '')
-  const [endDate, setEndDate] = useState(monthOptions[0]?.endDate || '')
-
   const handleMonthChange = (newValue: string, start: string, end: string) => {
     setSelectedMonth(newValue)
-    setStartDate(start)
-    setEndDate(end)
+    handleDateRangeChange([new Date(start + 'T00:00:00'), new Date(end + 'T00:00:00')])
   }
 
   return (
@@ -57,28 +68,35 @@ const AnalyticsDashboard = () => {
               <AnalyticsFilterHeader
                 selectedMonth={selectedMonth}
                 onMonthChange={handleMonthChange}
+                availableFilters={availableFilters}
+                filtersLoading={filtersLoading}
+                selectedRegions={selectedRegions}
+                onRegionsChange={setSelectedRegions}
+                selectedClients={selectedClients}
+                onClientsChange={setSelectedClients}
+                filteredClientOptions={filteredClientOptions}
               />
             </Grid>
 
             {/* Sales Trend Chart (Full Width) */}
             <Grid item xs={12}>
-              <SalesTrendChart startDate={startDate} endDate={endDate} />
+              <SalesTrendChart filters={buildFilters()} />
             </Grid>
 
             {/* Top Products & Sales by Route (Two Columns) */}
             <Grid item xs={12} md={6}>
-              <TopProductsChart startDate={startDate} endDate={endDate} />
+              <TopProductsChart filters={buildFilters()} />
             </Grid>
             <Grid item xs={12} md={6}>
-              <SalesByRouteChart startDate={startDate} endDate={endDate} />
+              <SalesByRouteChart filters={buildFilters()} />
             </Grid>
 
             {/* Grupos por Litros y por Kilos */}
             <Grid item xs={12} md={6}>
-              <TopGroupsByLitersChart startDate={startDate} endDate={endDate} />
+              <TopGroupsByLitersChart filters={buildFilters()} />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TopGroupsByKilosChart startDate={startDate} endDate={endDate} />
+              <TopGroupsByKilosChart filters={buildFilters()} />
             </Grid>
 
             {/* Clientes por Tenant (debajo de Grupos por Litros) */}

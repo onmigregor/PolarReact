@@ -31,8 +31,7 @@ interface TopGroupByLitersItem {
 }
 
 interface Props {
-  startDate: string
-  endDate: string
+  filters: any
 }
 
 const COLORS = [
@@ -70,7 +69,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   return null
 }
 
-const TopGroupsByLitersChart = ({ startDate, endDate }: Props) => {
+const TopGroupsByLitersChart = ({ filters }: Props) => {
   // ** States
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<TopGroupByLitersItem[]>([])
@@ -78,13 +77,12 @@ const TopGroupsByLitersChart = ({ startDate, endDate }: Props) => {
   // ** Fetch data
   useEffect(() => {
     const fetchData = async () => {
-      if (!startDate || !endDate) return
+      if (!filters.start_date || !filters.end_date) return
 
       setLoading(true)
       try {
         const response = await axios.post('/analytics/reports/top-groups-by-liters', {
-          start_date: startDate,
-          end_date: endDate,
+          ...filters,
           limit: 15
         })
 
@@ -100,7 +98,7 @@ const TopGroupsByLitersChart = ({ startDate, endDate }: Props) => {
     }
 
     fetchData()
-  }, [startDate, endDate])
+  }, [filters])
 
   const chartData = data.map(item => ({
     ...item,
