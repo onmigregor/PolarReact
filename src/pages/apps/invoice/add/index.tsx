@@ -10,6 +10,9 @@ import Grid from '@mui/material/Grid'
 // ** Third Party Components
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Types
 import { InvoiceType, InvoiceClientType } from 'src/types/apps/invoiceTypes'
 

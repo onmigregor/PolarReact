@@ -10,6 +10,9 @@ import CardContent, { CardContentProps } from '@mui/material/CardContent'
 // ** Third Party Imports
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Types
 import { HelpCenterCategoriesType, HelpCenterArticlesOverviewType } from 'src/@fake-db/types'
 

@@ -24,15 +24,15 @@ import Icon from 'src/@core/components/icon'
 
 // ** Hooks & Services
 import { useDataTable } from 'src/hooks/useDataTable'
-import companyRouteService from './services/companyRouteService'
-import regionService from 'src/pages/regions/services/regionService'
+import companyRouteService from 'src/@modules/company-routes/services/companyRouteService'
+import regionService from 'src/@modules/regions/services/regionService'
 
 // ** Types
-import { CompanyRouteType } from './types'
-import { RegionType } from 'src/pages/regions/types'
+import { CompanyRouteType } from 'src/@modules/company-routes/types'
+import { RegionType } from 'src/@modules/regions/types'
 
 // ** Dialogs
-import DeleteConfirmDialog from 'src/pages/regions/components/DeleteConfirmDialog'
+import DeleteConfirmDialog from 'src/@modules/regions/components/DeleteConfirmDialog'
 
 // ** Third Party Imports
 import toast from 'react-hot-toast'
@@ -212,9 +212,9 @@ const CompanyRoutesList = () => {
                 >
                   <MenuItem value=''>Todas las regiones</MenuItem>
                   {regions.map(region => (
-                     <MenuItem key={region.id} value={region.id}>
-                       {region.citName}
-                     </MenuItem>
+                    <MenuItem key={region.id} value={region.id}>
+                      {region.citName}
+                    </MenuItem>
                   ))}
                 </CustomTextField>
               </Box>

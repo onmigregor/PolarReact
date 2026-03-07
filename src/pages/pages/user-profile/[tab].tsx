@@ -4,6 +4,9 @@ import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPr
 // ** Third Party Imports
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Demo Components Imports
 import UserProfile from 'src/views/pages/user-profile/UserProfile'
 

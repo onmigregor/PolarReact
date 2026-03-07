@@ -14,6 +14,9 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Imports
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Types
 import { FaqType } from 'src/@fake-db/types'
 

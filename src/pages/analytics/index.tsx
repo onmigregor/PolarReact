@@ -10,15 +10,15 @@ import AlertTitle from '@mui/material/AlertTitle'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 // ** Module Components
-import AnalyticsFilters from './components/filters/AnalyticsFilters'
-import SalesTrendChart from './components/charts/SalesTrendChart'
-import TopProductsChart from './components/charts/TopProductsChart'
-import SalesByProductChart from './components/charts/SalesByProductChart'
-import SalesByRouteChart from './components/charts/SalesByRouteChart'
+import AnalyticsFilters from 'src/@modules/analytics/components/filters/AnalyticsFilters'
+import SalesTrendChart from 'src/@modules/analytics/components/charts/SalesTrendChart'
+import TopProductsChart from 'src/@modules/analytics/components/charts/TopProductsChart'
+import SalesByProductChart from 'src/@modules/analytics/components/charts/SalesByProductChart'
+import SalesByRouteChart from 'src/@modules/analytics/components/charts/SalesByRouteChart'
 
 // ** Module Hooks & Services
-import { useAnalyticsFilters } from './hooks/useAnalyticsFilters'
-import analyticsService from './services/analyticsService'
+import { useAnalyticsFilters } from 'src/@modules/analytics/hooks/useAnalyticsFilters'
+import analyticsService from 'src/@modules/analytics/services/analyticsService'
 
 // ** Module Types
 import {
@@ -27,7 +27,7 @@ import {
   SalesByProductItem,
   SalesByRouteItem,
   ReportMeta
-} from './types'
+} from 'src/@modules/analytics/types'
 
 const AnalyticsPage = () => {
   // Filter hook
@@ -83,77 +83,77 @@ const AnalyticsPage = () => {
   return (
     <DatePickerWrapper>
       <Box>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant='h4' sx={{ fontWeight: 600 }}>
-          📊 Analytics
-        </Typography>
-        <Typography variant='body2' color='text.secondary'>
-          Reportes de ventas consolidados de todas las distribuidoras
-        </Typography>
+        {/* Header */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant='h4' sx={{ fontWeight: 600 }}>
+            📊 Analytics
+          </Typography>
+          <Typography variant='body2' color='text.secondary'>
+            Reportes de ventas consolidados de todas las distribuidoras
+          </Typography>
+        </Box>
+
+        {/* Filters Bar */}
+        <AnalyticsFilters
+          availableFilters={availableFilters}
+          filtersLoading={filtersLoading}
+          startDate={startDate}
+          endDate={endDate}
+          selectedClients={selectedClients}
+          selectedProducts={selectedProducts}
+          onDateRangeChange={handleDateRangeChange}
+          onClientsChange={setSelectedClients}
+          onProductsChange={setSelectedProducts}
+          onApplyFilters={handleApplyFilters}
+          loading={loading}
+        />
+
+        {/* Error alerts */}
+        {meta && meta.errors.length > 0 && (
+          <Alert severity='warning' sx={{ mb: 4 }}>
+            <AlertTitle>Advertencia</AlertTitle>
+            {meta.errors.length} cliente(s) no pudieron ser consultados:
+            {meta.errors.map((err, i) => (
+              <Typography key={i} variant='body2'>• {err.client}: {err.error}</Typography>
+            ))}
+          </Alert>
+        )}
+
+        {/* Meta info */}
+        {meta && !loading && (
+          <Typography variant='body2' color='text.secondary' sx={{ mb: 3 }}>
+            {meta.clients_queried} cliente(s) consultados
+          </Typography>
+        )}
+
+        {/* Prompt to query if not yet */}
+        {!hasQueried && !loading && (
+          <Alert severity='info' sx={{ mb: 4 }}>
+            Selecciona las fechas y filtros deseados, luego haz clic en <strong>Consultar</strong> para ver los reportes.
+          </Alert>
+        )}
+
+        {/* Charts Grid */}
+        <Grid container spacing={4}>
+          {/* Sales Trend — Full width */}
+          <Grid item xs={12}>
+            <SalesTrendChart data={salesTrend} loading={loading && hasQueried} />
+          </Grid>
+
+          {/* Top Products + Sales by Route — Side by side */}
+          <Grid item xs={12} md={6}>
+            <TopProductsChart data={topProducts} loading={loading && hasQueried} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <SalesByRouteChart data={salesByRoute} loading={loading && hasQueried} />
+          </Grid>
+
+          {/* Sales by Product — Full width */}
+          <Grid item xs={12}>
+            <SalesByProductChart data={salesByProduct} loading={loading && hasQueried} />
+          </Grid>
+        </Grid>
       </Box>
-
-      {/* Filters Bar */}
-      <AnalyticsFilters
-        availableFilters={availableFilters}
-        filtersLoading={filtersLoading}
-        startDate={startDate}
-        endDate={endDate}
-        selectedClients={selectedClients}
-        selectedProducts={selectedProducts}
-        onDateRangeChange={handleDateRangeChange}
-        onClientsChange={setSelectedClients}
-        onProductsChange={setSelectedProducts}
-        onApplyFilters={handleApplyFilters}
-        loading={loading}
-      />
-
-      {/* Error alerts */}
-      {meta && meta.errors.length > 0 && (
-        <Alert severity='warning' sx={{ mb: 4 }}>
-          <AlertTitle>Advertencia</AlertTitle>
-          {meta.errors.length} cliente(s) no pudieron ser consultados:
-          {meta.errors.map((err, i) => (
-            <Typography key={i} variant='body2'>• {err.client}: {err.error}</Typography>
-          ))}
-        </Alert>
-      )}
-
-      {/* Meta info */}
-      {meta && !loading && (
-        <Typography variant='body2' color='text.secondary' sx={{ mb: 3 }}>
-          {meta.clients_queried} cliente(s) consultados
-        </Typography>
-      )}
-
-      {/* Prompt to query if not yet */}
-      {!hasQueried && !loading && (
-        <Alert severity='info' sx={{ mb: 4 }}>
-          Selecciona las fechas y filtros deseados, luego haz clic en <strong>Consultar</strong> para ver los reportes.
-        </Alert>
-      )}
-
-      {/* Charts Grid */}
-      <Grid container spacing={4}>
-        {/* Sales Trend — Full width */}
-        <Grid item xs={12}>
-          <SalesTrendChart data={salesTrend} loading={loading && hasQueried} />
-        </Grid>
-
-        {/* Top Products + Sales by Route — Side by side */}
-        <Grid item xs={12} md={6}>
-          <TopProductsChart data={topProducts} loading={loading && hasQueried} />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <SalesByRouteChart data={salesByRoute} loading={loading && hasQueried} />
-        </Grid>
-
-        {/* Sales by Product — Full width */}
-        <Grid item xs={12}>
-          <SalesByProductChart data={salesByProduct} loading={loading && hasQueried} />
-        </Grid>
-      </Grid>
-    </Box>
     </DatePickerWrapper>
   )
 }

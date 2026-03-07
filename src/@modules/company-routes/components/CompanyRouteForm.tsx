@@ -30,9 +30,9 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Types & Services
-import { CompanyRouteType, CompanyRouteFormData } from '../types'
-import regionService from 'src/pages/regions/services/regionService'
-import { RegionType } from 'src/pages/regions/types'
+import regionService from 'src/@modules/regions/services/regionService'
+import { RegionType } from 'src/@modules/regions/types'
+import { CompanyRouteType, CompanyRouteFormData } from 'src/@modules/company-routes/types'
 
 interface CompanyRouteFormProps {
   data?: CompanyRouteType | null

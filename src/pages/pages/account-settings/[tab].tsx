@@ -4,6 +4,9 @@ import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPr
 // ** Third Party Imports
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Types
 import { PricingDataType } from 'src/@core/components/plan-details/types'
 

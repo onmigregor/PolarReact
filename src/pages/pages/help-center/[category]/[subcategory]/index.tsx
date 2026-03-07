@@ -4,6 +4,9 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPr
 // ** Third Party Imports
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Type Imports
 import { HelpCenterCategoriesType } from 'src/@fake-db/types'
 

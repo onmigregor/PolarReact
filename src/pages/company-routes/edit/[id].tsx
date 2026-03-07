@@ -12,11 +12,11 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Custom Components Imports
 import PageHeader from 'src/@core/components/page-header'
-import CompanyRouteForm from '../components/CompanyRouteForm'
+import CompanyRouteForm from 'src/@modules/company-routes/components/CompanyRouteForm'
 
 // ** Services & Types
-import companyRouteService from '../services/companyRouteService'
-import { CompanyRouteType, CompanyRouteFormData } from '../types'
+import companyRouteService from 'src/@modules/company-routes/services/companyRouteService'
+import { CompanyRouteType, CompanyRouteFormData } from 'src/@modules/company-routes/types'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'

@@ -1,4 +1,4 @@
-import { RegionType } from 'src/pages/regions/types'
+import { RegionType } from 'src/@modules/regions/types'
 
 export interface CompanyRouteType {
   id: number

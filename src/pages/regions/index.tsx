@@ -15,10 +15,10 @@ import Icon from 'src/@core/components/icon'
 import toast from 'react-hot-toast'
 
 // ** Module Imports
-import regionService from './services/regionService'
-import RegionFormDialog from './components/RegionFormDialog'
-import DeleteConfirmDialog from './components/DeleteConfirmDialog'
-import { RegionType, RegionFormData } from './types'
+import regionService from 'src/@modules/regions/services/regionService'
+import RegionFormDialog from 'src/@modules/regions/components/RegionFormDialog'
+import DeleteConfirmDialog from 'src/@modules/regions/components/DeleteConfirmDialog'
+import { RegionType, RegionFormData } from 'src/@modules/regions/types'
 
 // ** Custom Components Imports
 import GenericTable, { Column } from 'src/@core/components/generic-table'

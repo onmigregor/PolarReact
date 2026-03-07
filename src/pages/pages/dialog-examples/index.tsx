@@ -7,6 +7,9 @@ import Grid from '@mui/material/Grid'
 // ** Third Party Components
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Type Import
 import { PricingDataType } from 'src/@core/components/plan-details/types'
 

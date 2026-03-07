@@ -1,7 +1,7 @@
 // ** Service layer for CompanyRoute module
 import axios from 'src/configs/axios'
 import { CompanyRouteType, CompanyRouteFormData } from '../types'
-import { PaginatedResponse, SingleResponse } from 'src/pages/regions/types'
+import { PaginatedResponse, SingleResponse } from 'src/@modules/regions/types'
 
 interface GetAllParams {
   search?: string

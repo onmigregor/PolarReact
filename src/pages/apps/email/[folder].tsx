@@ -4,6 +4,9 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next/type
 // ** Third Party Imports
 import axios from 'axios'
 
+// ** Fake DB Import
+import 'src/@fake-db'
+
 // ** Types
 import { MailLayoutType, MailType } from 'src/types/apps/emailTypes'
 

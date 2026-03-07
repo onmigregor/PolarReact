@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Types
-import { AvailableFilters, ClientOption, RegionOption } from 'src/pages/analytics/types'
+import { AvailableFilters, ClientOption, RegionOption } from 'src/@modules/analytics/types'
 
 interface Props {
   selectedMonth: string

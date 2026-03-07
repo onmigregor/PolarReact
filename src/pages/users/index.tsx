@@ -19,14 +19,14 @@ import PageHeader from 'src/@core/components/page-header'
 
 // ** Hooks & Services
 import { useDataTable } from 'src/hooks/useDataTable'
-import userService from './services/userService'
+import userService from 'src/@modules/users/services/userService'
 
 // ** Types
-import { UserType, UserFormData } from './types'
+import { UserType, UserFormData } from 'src/@modules/users/types'
 
 // ** Dialogs
-import UserFormDialog from './components/UserFormDialog'
-import UserDeleteDialog from './components/UserDeleteDialog'
+import UserFormDialog from 'src/@modules/users/components/UserFormDialog'
+import UserDeleteDialog from 'src/@modules/users/components/UserDeleteDialog'
 
 // ** Third Party Imports
 import toast from 'react-hot-toast'
@@ -51,8 +51,8 @@ const UsersPage = () => {
     handleSearchChange,
     refresh
   } = useDataTable<UserType>({
-      fetchData: userService.getUsers
-    })
+    fetchData: userService.getUsers
+  })
 
   // ** Handlers
   const handleAdd = () => {

@@ -16,7 +16,7 @@ import TopGroupsByKilosChart from 'src/views/dashboards/analytics/TopGroupsByKil
 import ClientsByTenantChart from 'src/views/dashboards/analytics/ClientsByTenantChart'
 
 // ** Hook Import
-import { useAnalyticsFilters } from 'src/pages/analytics/hooks/useAnalyticsFilters'
+import { useAnalyticsFilters } from 'src/@modules/analytics/hooks/useAnalyticsFilters'
 
 import AnalyticsProject from 'src/views/dashboards/analytics/AnalyticsProject'
 import AnalyticsOrderVisits from 'src/views/dashboards/analytics/AnalyticsOrderVisits'
