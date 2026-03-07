@@ -3,6 +3,7 @@ import { RegionType } from 'src/@modules/regions/types'
 export interface CompanyRouteType {
   id: number
   code: string
+  cep: string
   name: string
   route_name: string | null
   rif: string
@@ -18,6 +19,7 @@ export interface CompanyRouteType {
 
 export interface CompanyRouteFormData {
   code: string
+  cep: string
   name: string
   route_name?: string | null
   rif: string

@@ -113,6 +113,15 @@ const CompanyRoutesList = () => {
       )
     },
     {
+      id: 'cep',
+      label: 'CEP',
+      render: (row: CompanyRouteType) => (
+        <Typography variant='body2' sx={{ fontWeight: 500 }}>
+          {row.cep}
+        </Typography>
+      )
+    },
+    {
       id: 'name',
       label: 'Nombre / RIF',
       render: (row: CompanyRouteType) => (

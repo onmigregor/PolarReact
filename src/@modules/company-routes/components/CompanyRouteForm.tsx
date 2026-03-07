@@ -42,6 +42,7 @@ interface CompanyRouteFormProps {
 
 const schema = yup.object().shape({
   code: yup.string().required('El código es requerido'),
+  cep: yup.string().required('El CEP es requerido'),
   name: yup.string().required('El nombre es requerido'),
   rif: yup.string().required('El RIF es requerido'),
   fiscal_address: yup.string().required('La dirección fiscal es requerida'),
@@ -53,6 +54,7 @@ const schema = yup.object().shape({
 
 const defaultValues: CompanyRouteFormData = {
   code: '',
+  cep: '',
   name: '',
   rif: '',
   fiscal_address: '',
@@ -100,6 +102,7 @@ const CompanyRouteForm = ({ data, onSubmit, loading }: CompanyRouteFormProps) =>
     if (data) {
       reset({
         code: data.code,
+        cep: data.cep,
         name: data.name,
         rif: data.rif,
         fiscal_address: data.fiscal_address,
@@ -120,7 +123,7 @@ const CompanyRouteForm = ({ data, onSubmit, loading }: CompanyRouteFormProps) =>
             <CardHeader title='Información General' />
             <CardContent>
               <Grid container spacing={5}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='code'
                     control={control}
@@ -139,7 +142,26 @@ const CompanyRouteForm = ({ data, onSubmit, loading }: CompanyRouteFormProps) =>
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='cep'
+                    control={control}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        label='CEP'
+                        placeholder='Ej: CEP01'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        error={Boolean(errors.cep)}
+                        {...(errors.cep && { helperText: errors.cep.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='rif'
                     control={control}
