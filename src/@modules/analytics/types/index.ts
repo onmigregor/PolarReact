@@ -8,6 +8,10 @@ export interface ReportFilters {
   region_ids?: number[]
   product_skus?: string[]
   routes?: string[]
+  cl1_codes?: string[]
+  cl2_codes?: string[]
+  brand_codes?: string[]
+  segment_codes?: string[]
 }
 
 export interface ClientOption {
@@ -19,10 +23,27 @@ export interface ClientOption {
 export interface RegionOption {
   id: number
   name: string
+  code?: string
 }
 
-export interface RegionOption {
-  id: number
+export interface FamilyOption {
+  id: string
+  name: string
+}
+
+export interface CategoryOption {
+  id: string
+  name: string
+  cl1_code: string
+}
+
+export interface BrandOption {
+  id: string
+  name: string
+}
+
+export interface SegmentOption {
+  id: string
   name: string
 }
 
@@ -32,12 +53,20 @@ export interface ProductOption {
   name: string
   category: string | null
   brand: string | null
+  cl1_code: string | null
+  cl2_code: string | null
+  brand_code: string | null
+  segment_code: string | null
 }
 
 export interface AvailableFilters {
   clients: ClientOption[]
   regions: RegionOption[]
   products: ProductOption[]
+  families: FamilyOption[]
+  categories: CategoryOption[]
+  brands: BrandOption[]
+  segments: SegmentOption[]
 }
 
 // === Report Response Types ===

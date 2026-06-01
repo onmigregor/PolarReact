@@ -42,8 +42,18 @@ const AnalyticsDashboard = () => {
     selectedClients,
     setSelectedClients,
     filteredClientOptions,
-    selectedRegions,
-    setSelectedRegions,
+    selectedFamilies,
+    setSelectedFamilies,
+    selectedCategories,
+    setSelectedCategories,
+    filteredCategoryOptions,
+    selectedBrands,
+    setSelectedBrands,
+    selectedSegments,
+    setSelectedSegments,
+    selectedProducts,
+    setSelectedProducts,
+    filteredProductOptions,
     handleDateRangeChange,
     buildFilters
   } = useAnalyticsFilters()
@@ -70,11 +80,21 @@ const AnalyticsDashboard = () => {
                 onMonthChange={handleMonthChange}
                 availableFilters={availableFilters}
                 filtersLoading={filtersLoading}
-                selectedRegions={selectedRegions}
-                onRegionsChange={setSelectedRegions}
                 selectedClients={selectedClients}
                 onClientsChange={setSelectedClients}
                 filteredClientOptions={filteredClientOptions}
+                selectedFamilies={selectedFamilies}
+                onFamiliesChange={setSelectedFamilies}
+                selectedCategories={selectedCategories}
+                onCategoriesChange={setSelectedCategories}
+                filteredCategoryOptions={filteredCategoryOptions}
+                selectedBrands={selectedBrands}
+                onBrandsChange={setSelectedBrands}
+                selectedSegments={selectedSegments}
+                onSegmentsChange={setSelectedSegments}
+                selectedProducts={selectedProducts}
+                onProductsChange={setSelectedProducts}
+                filteredProductOptions={filteredProductOptions}
               />
             </Grid>
 

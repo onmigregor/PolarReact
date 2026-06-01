@@ -36,11 +36,29 @@ const AnalyticsPage = () => {
     filtersLoading,
     startDate,
     endDate,
-    selectedClients,
-    selectedProducts,
     handleDateRangeChange,
+    
+    // Selection state
+    selectedClients,
     setSelectedClients,
+
+    selectedRoutes,
+    setSelectedRoutes,
+    
+    // Product Filters
+    selectedFamilies,
+    setSelectedFamilies,
+    selectedCategories,
+    setSelectedCategories,
+    filteredCategoryOptions,
+    selectedBrands,
+    setSelectedBrands,
+    selectedSegments,
+    setSelectedSegments,
+    selectedProducts,
     setSelectedProducts,
+    filteredProductOptions,
+
     buildFilters
   } = useAnalyticsFilters()
 
@@ -99,11 +117,29 @@ const AnalyticsPage = () => {
           filtersLoading={filtersLoading}
           startDate={startDate}
           endDate={endDate}
-          selectedClients={selectedClients}
-          selectedProducts={selectedProducts}
           onDateRangeChange={handleDateRangeChange}
+          
+          selectedClients={selectedClients}
           onClientsChange={setSelectedClients}
+
+          selectedRoutes={selectedRoutes}
+          onRoutesChange={setSelectedRoutes}
+
+          selectedFamilies={selectedFamilies}
+          onFamiliesChange={setSelectedFamilies}
+          selectedCategories={selectedCategories}
+          onCategoriesChange={setSelectedCategories}
+          filteredCategoryOptions={filteredCategoryOptions}
+          
+          selectedBrands={selectedBrands}
+          onBrandsChange={setSelectedBrands}
+          selectedSegments={selectedSegments}
+          onSegmentsChange={setSelectedSegments}
+          
+          selectedProducts={selectedProducts}
           onProductsChange={setSelectedProducts}
+          filteredProductOptions={filteredProductOptions}
+          
           onApplyFilters={handleApplyFilters}
           loading={loading}
         />

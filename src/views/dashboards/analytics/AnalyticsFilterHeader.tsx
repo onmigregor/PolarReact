@@ -14,18 +14,40 @@ import Grid from '@mui/material/Grid'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Types
-import { AvailableFilters, ClientOption, RegionOption } from 'src/@modules/analytics/types'
+import { 
+  AvailableFilters, 
+  ClientOption, 
+  FamilyOption, 
+  CategoryOption, 
+  BrandOption, 
+  SegmentOption, 
+  ProductOption 
+} from 'src/@modules/analytics/types'
 
 interface Props {
   selectedMonth: string
   onMonthChange: (value: string, startDate: string, endDate: string) => void
   availableFilters: AvailableFilters
   filtersLoading: boolean
-  selectedRegions: RegionOption[]
-  onRegionsChange: (regions: RegionOption[]) => void
+  
   selectedClients: ClientOption[]
   onClientsChange: (clients: ClientOption[]) => void
   filteredClientOptions: ClientOption[]
+  
+  selectedFamilies: FamilyOption[]
+  onFamiliesChange: (families: FamilyOption[]) => void
+  selectedCategories: CategoryOption[]
+  onCategoriesChange: (categories: CategoryOption[]) => void
+  filteredCategoryOptions: CategoryOption[]
+  
+  selectedBrands: BrandOption[]
+  onBrandsChange: (brands: BrandOption[]) => void
+  selectedSegments: SegmentOption[]
+  onSegmentsChange: (segments: SegmentOption[]) => void
+  
+  selectedProducts: ProductOption[]
+  onProductsChange: (products: ProductOption[]) => void
+  filteredProductOptions: ProductOption[]
 }
 
 interface MonthOption {
@@ -78,11 +100,21 @@ const AnalyticsFilterHeader = ({
   onMonthChange,
   availableFilters,
   filtersLoading,
-  selectedRegions,
-  onRegionsChange,
   selectedClients,
   onClientsChange,
-  filteredClientOptions
+  filteredClientOptions,
+  selectedFamilies,
+  onFamiliesChange,
+  selectedCategories,
+  onCategoriesChange,
+  filteredCategoryOptions,
+  selectedBrands,
+  onBrandsChange,
+  selectedSegments,
+  onSegmentsChange,
+  selectedProducts,
+  onProductsChange,
+  filteredProductOptions
 }: Props) => {
   const monthOptions = useMemo(() => generateMonthOptions(), [])
 
@@ -117,24 +149,24 @@ const AnalyticsFilterHeader = ({
             </CustomTextField>
           </Grid>
 
-          {/* Selector de Regiones */}
+          {/* Selector de Clientes */}
           <Grid item xs={12} md={3}>
             <Autocomplete
               multiple
               size='small'
-              options={availableFilters.regions}
+              options={filteredClientOptions}
               getOptionLabel={option => option.name}
               isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={selectedRegions}
-              onChange={(_, value) => onRegionsChange(value)}
+              value={selectedClients}
+              onChange={(_, value) => onClientsChange(value)}
               loading={filtersLoading}
               limitTags={1}
               disableCloseOnSelect
               renderInput={params => (
                 <CustomTextField
                   {...params}
-                  label='Regiones'
-                  placeholder='Todas'
+                  label='Clientes'
+                  placeholder='Todos'
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
@@ -144,6 +176,110 @@ const AnalyticsFilterHeader = ({
                       </>
                     )
                   }}
+                />
+              )}
+            />
+          </Grid>
+
+          {/* Selector de Familias */}
+          <Grid item xs={12} md={3}>
+            <Autocomplete
+              multiple
+              size='small'
+              options={availableFilters.families || []}
+              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={selectedFamilies}
+              onChange={(_, value) => onFamiliesChange(value)}
+              loading={filtersLoading}
+              limitTags={1}
+              disableCloseOnSelect
+              noOptionsText='Sin opciones'
+              renderInput={(params) => (
+                <CustomTextField {...params} label='Familias' placeholder={selectedFamilies.length === 0 ? 'Todas' : ''} />
+              )}
+            />
+          </Grid>
+
+          {/* Selector de Categorías */}
+          <Grid item xs={12} md={3}>
+            <Autocomplete
+              multiple
+              size='small'
+              options={filteredCategoryOptions || []}
+              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={selectedCategories}
+              onChange={(_, value) => onCategoriesChange(value)}
+              loading={filtersLoading}
+              limitTags={1}
+              disableCloseOnSelect
+              noOptionsText='Sin opciones'
+              renderInput={(params) => (
+                <CustomTextField {...params} label='Categorías' placeholder={selectedCategories.length === 0 ? 'Todas' : ''} />
+              )}
+            />
+          </Grid>
+
+          {/* Selector de Marcas */}
+          <Grid item xs={12} md={3}>
+            <Autocomplete
+              multiple
+              size='small'
+              options={availableFilters.brands || []}
+              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={selectedBrands}
+              onChange={(_, value) => onBrandsChange(value)}
+              loading={filtersLoading}
+              limitTags={1}
+              disableCloseOnSelect
+              noOptionsText='Sin opciones'
+              renderInput={(params) => (
+                <CustomTextField {...params} label='Marcas' placeholder={selectedBrands.length === 0 ? 'Todas' : ''} />
+              )}
+            />
+          </Grid>
+
+          {/* Selector de Segmentos */}
+          <Grid item xs={12} md={3}>
+            <Autocomplete
+              multiple
+              size='small'
+              options={availableFilters.segments || []}
+              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={selectedSegments}
+              onChange={(_, value) => onSegmentsChange(value)}
+              loading={filtersLoading}
+              limitTags={1}
+              disableCloseOnSelect
+              noOptionsText='Sin opciones'
+              renderInput={(params) => (
+                <CustomTextField {...params} label='Segmentos' placeholder={selectedSegments.length === 0 ? 'Todos' : ''} />
+              )}
+            />
+          </Grid>
+
+          {/* Productos */}
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              multiple
+              size='small'
+              options={filteredProductOptions || []}
+              getOptionLabel={(option) => `${option.name} (${option.sku})`}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              value={selectedProducts}
+              onChange={(_, value) => onProductsChange(value)}
+              loading={filtersLoading}
+              limitTags={3}
+              disableCloseOnSelect
+              noOptionsText='Sin opciones'
+              renderInput={(params) => (
+                <CustomTextField 
+                  {...params} 
+                  label='Productos Específicos' 
+                  placeholder={selectedProducts.length === 0 ? 'Todos' : ''} 
                 />
               )}
             />
