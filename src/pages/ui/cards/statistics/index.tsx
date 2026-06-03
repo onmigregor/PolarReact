@@ -1,6 +1,9 @@
 // ** Next Imports
 import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
 
+// ** Fake-DB Import
+import 'src/@fake-db'
+
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 

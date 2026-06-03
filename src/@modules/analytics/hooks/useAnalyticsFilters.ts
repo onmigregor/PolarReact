@@ -6,6 +6,7 @@ import {
   ReportFilters,
   AvailableFilters,
   ClientOption,
+  RouteOption,
   ProductOption,
   RegionOption,
   FamilyOption,
@@ -20,7 +21,7 @@ const defaultEndDate = new Date()
 export const useAnalyticsFilters = () => {
   // Filter options from API
   const [availableFilters, setAvailableFilters] = useState<AvailableFilters>({
-    clients: [],
+    routes: [],
     regions: [],
     products: [],
     families: [],
@@ -35,7 +36,8 @@ export const useAnalyticsFilters = () => {
   const [endDate, setEndDate] = useState<Date | null>(defaultEndDate)
   const [selectedClients, setSelectedClients] = useState<ClientOption[]>([])
   const [selectedRegions, setSelectedRegions] = useState<RegionOption[]>([])
-  const [selectedRoutes, setSelectedRoutes] = useState<string[]>([])
+  const [selectedRoutes, setSelectedRoutes] = useState<RouteOption[]>([])
+  const [dynamicClients, setDynamicClients] = useState<ClientOption[]>([])
   
   // Advanced Products Filters
   const [selectedFamilies, setSelectedFamilies] = useState<FamilyOption[]>([])
@@ -52,11 +54,7 @@ export const useAnalyticsFilters = () => {
   }, [])
 
   // Filter clients based on selected regions (Cascading Logic)
-  const filteredClientOptions = availableFilters.clients.filter(client => {
-    if (selectedRegions.length === 0) return true
-    
-return client.region_id && selectedRegions.some(r => r.id === client.region_id)
-  })
+  const filteredClientOptions = dynamicClients
 
   // Filter categories based on selected families
   const filteredCategoryOptions = availableFilters.categories.filter(category => {
@@ -84,7 +82,7 @@ return matchesFamily && matchesCategory && matchesBrand && matchesSegment
 
         // Ensure defaults if API does not return them yet
         setAvailableFilters({
-          clients: data.clients || [],
+          routes: data.routes || [],
           regions: data.regions || [],
           products: data.products || [],
           families: data.families || [],
@@ -101,6 +99,29 @@ return matchesFamily && matchesCategory && matchesBrand && matchesSegment
     loadFilters()
   }, [])
 
+  // Fetch dynamic clients when selectedRoutes change
+  useEffect(() => {
+    const fetchClients = async () => {
+      if (selectedRoutes.length === 0) {
+        setDynamicClients([])
+
+        // Filter out any selected clients since no routes are selected
+        setSelectedClients([])
+
+        return
+      }
+      try {
+        const routeIds = selectedRoutes.map(r => r.id)
+        const response = await analyticsService.getClientsByRoutes(routeIds)
+        setDynamicClients(response || [])
+      } catch (error) {
+        console.error('Error fetching clients for routes:', error)
+      }
+    }
+    
+    fetchClients()
+  }, [selectedRoutes])
+
   // Build the ReportFilters object from current selection
   const buildFilters = useCallback((): ReportFilters => {
     const filters: ReportFilters = {
@@ -115,7 +136,7 @@ return matchesFamily && matchesCategory && matchesBrand && matchesSegment
       filters.region_ids = selectedRegions.map(r => r.id)
     }
     if (selectedRoutes.length > 0) {
-      filters.routes = selectedRoutes
+      filters.routes = selectedRoutes.map(r => r.id)
     }
     
     if (selectedFamilies.length > 0) {

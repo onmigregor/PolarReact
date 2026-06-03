@@ -41,6 +41,7 @@ const AnalyticsPage = () => {
     // Selection state
     selectedClients,
     setSelectedClients,
+    filteredClientOptions,
 
     selectedRoutes,
     setSelectedRoutes,
@@ -121,6 +122,7 @@ const AnalyticsPage = () => {
           
           selectedClients={selectedClients}
           onClientsChange={setSelectedClients}
+          filteredClientOptions={filteredClientOptions}
 
           selectedRoutes={selectedRoutes}
           onRoutesChange={setSelectedRoutes}

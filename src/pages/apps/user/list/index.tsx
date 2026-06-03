@@ -5,6 +5,9 @@ import { useState, useEffect, MouseEvent, useCallback } from 'react'
 import Link from 'next/link'
 import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
 
+// ** Fake-DB Import
+import 'src/@fake-db'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'

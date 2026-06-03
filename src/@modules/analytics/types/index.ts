@@ -4,10 +4,10 @@
 export interface ReportFilters {
   start_date: string
   end_date: string
-  client_ids?: number[]
+  client_ids?: string[]
   region_ids?: number[]
   product_skus?: string[]
-  routes?: string[]
+  routes?: number[]
   cl1_codes?: string[]
   cl2_codes?: string[]
   brand_codes?: string[]
@@ -15,8 +15,15 @@ export interface ReportFilters {
 }
 
 export interface ClientOption {
+  id: string
+  name: string
+  company_route_id: number
+}
+
+export interface RouteOption {
   id: number
   name: string
+  db_name: string
   region_id: number | null
 }
 
@@ -60,7 +67,7 @@ export interface ProductOption {
 }
 
 export interface AvailableFilters {
-  clients: ClientOption[]
+  routes: RouteOption[]
   regions: RegionOption[]
   products: ProductOption[]
   families: FamilyOption[]

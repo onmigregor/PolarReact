@@ -42,6 +42,8 @@ const AnalyticsDashboard = () => {
     selectedClients,
     setSelectedClients,
     filteredClientOptions,
+    selectedRoutes,
+    setSelectedRoutes,
     selectedFamilies,
     setSelectedFamilies,
     selectedCategories,
@@ -83,6 +85,8 @@ const AnalyticsDashboard = () => {
                 selectedClients={selectedClients}
                 onClientsChange={setSelectedClients}
                 filteredClientOptions={filteredClientOptions}
+                selectedRoutes={selectedRoutes}
+                onRoutesChange={setSelectedRoutes}
                 selectedFamilies={selectedFamilies}
                 onFamiliesChange={setSelectedFamilies}
                 selectedCategories={selectedCategories}

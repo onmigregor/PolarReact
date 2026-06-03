@@ -29,6 +29,7 @@ import {
   CategoryOption,
   BrandOption,
   SegmentOption,
+  RouteOption,
   AvailableFilters 
 } from '../../types'
 
@@ -41,9 +42,10 @@ interface AnalyticsFiltersProps {
   
   selectedClients: ClientOption[]
   onClientsChange: (clients: ClientOption[]) => void
+  filteredClientOptions: ClientOption[]
 
-  selectedRoutes: string[]
-  onRoutesChange: (routes: string[]) => void
+  selectedRoutes: RouteOption[]
+  onRoutesChange: (routes: RouteOption[]) => void
 
   selectedFamilies: FamilyOption[]
   onFamiliesChange: (families: FamilyOption[]) => void
@@ -78,6 +80,7 @@ const AnalyticsFilters = ({
   onDateRangeChange,
   selectedClients,
   onClientsChange,
+  filteredClientOptions,
 
   selectedRoutes,
   onRoutesChange,
@@ -158,7 +161,7 @@ const AnalyticsFilters = ({
             <Autocomplete
               multiple
               size='small'
-              options={availableFilters.clients || []}
+              options={filteredClientOptions || []}
               getOptionLabel={(option) => option.name}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               value={selectedClients}
@@ -179,18 +182,22 @@ const AnalyticsFilters = ({
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-             {/* Note: if backend provides distinct routes, we could use that. For now we accept free input or basic routes */}
             <Autocomplete
               multiple
-              freeSolo
               size='small'
-              options={[]}
+              options={availableFilters.routes || []}
+              getOptionLabel={(option) => `${option.name} - ${option.db_name}`}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               value={selectedRoutes}
-              onChange={(_, value) => onRoutesChange(value as string[])}
+              onChange={(_, value) => onRoutesChange(value)}
+              loading={filtersLoading}
+              limitTags={1}
+              disableCloseOnSelect
+              noOptionsText='Sin opciones'
               renderInput={(params) => (
                 <CustomTextField
                   {...params}
-                  label='Rutas (ej. R-001)'
+                  label='Rutas'
                   placeholder={selectedRoutes.length === 0 ? 'Todas' : ''}
                 />
               )}

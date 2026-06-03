@@ -21,7 +21,8 @@ import {
   CategoryOption, 
   BrandOption, 
   SegmentOption, 
-  ProductOption 
+  ProductOption,
+  RouteOption
 } from 'src/@modules/analytics/types'
 
 interface Props {
@@ -39,6 +40,9 @@ interface Props {
   selectedCategories: CategoryOption[]
   onCategoriesChange: (categories: CategoryOption[]) => void
   filteredCategoryOptions: CategoryOption[]
+
+  selectedRoutes: RouteOption[]
+  onRoutesChange: (routes: RouteOption[]) => void
   
   selectedBrands: BrandOption[]
   onBrandsChange: (brands: BrandOption[]) => void
@@ -108,6 +112,8 @@ const AnalyticsFilterHeader = ({
   selectedCategories,
   onCategoriesChange,
   filteredCategoryOptions,
+  selectedRoutes,
+  onRoutesChange,
   selectedBrands,
   onBrandsChange,
   selectedSegments,
@@ -149,33 +155,25 @@ const AnalyticsFilterHeader = ({
             </CustomTextField>
           </Grid>
 
-          {/* Selector de Clientes */}
+          {/* Selector de Rutas */}
           <Grid item xs={12} md={3}>
             <Autocomplete
               multiple
               size='small'
-              options={filteredClientOptions}
-              getOptionLabel={option => option.name}
+              options={availableFilters.routes || []}
+              getOptionLabel={(option) => `${option.name} - ${option.db_name}`}
               isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={selectedClients}
-              onChange={(_, value) => onClientsChange(value)}
+              value={selectedRoutes}
+              onChange={(_, value) => onRoutesChange(value)}
               loading={filtersLoading}
               limitTags={1}
               disableCloseOnSelect
-              renderInput={params => (
+              noOptionsText='Sin opciones'
+              renderInput={(params) => (
                 <CustomTextField
                   {...params}
-                  label='Clientes'
-                  placeholder='Todos'
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <>
-                        {filtersLoading ? <CircularProgress size={16} /> : null}
-                        {params.InputProps.endAdornment}
-                      </>
-                    )
-                  }}
+                  label='Rutas'
+                  placeholder={selectedRoutes.length === 0 ? 'Todas' : ''}
                 />
               )}
             />

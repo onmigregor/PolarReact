@@ -1,0 +1,65 @@
+name: Deploy PolarReact to VPS
+
+on:
+  push:
+    branches:
+      - master  # Se activará cuando subas cambios a la rama master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ejecutar comandos de despliegue en el VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # 1. Cargar o Instalar NVM y Node.js si no existen
+            export NVM_DIR="$HOME/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              . "$NVM_DIR/nvm.sh"
+            else
+              echo "Instalando NVM y Node.js..."
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+              . "$NVM_DIR/nvm.sh"
+              nvm install 22
+              nvm use 22
+            fi
+
+            # 2. Crear la carpeta si no existe y entrar
+            mkdir -p /home/polar-react
+            cd /home/polar-react
+
+            # 3. Si el proyecto no está clonado, lo clonamos. Si ya está, hacemos pull.
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/onmigregor/PolarReact.git .
+            else
+              git pull origin master
+            fi
+
+            # Copiar .env-main a .env para usar las variables de producción en la compilación
+            if [ -f ".env-main" ]; then
+              cp .env-main .env
+            fi
+
+            # 4. Instalar dependencias y compilar
+            npm install
+            npm run build
+
+            # 5. Instalar PM2 si no existe y reiniciar la app en el puerto 3000
+            if ! command -v pm2 &> /dev/null; then
+              npm install -g pm2
+            fi
+
+            pm2 describe polar-react > /dev/null
+            if [ $? -eq 0 ]; then
+              echo "Reiniciando app polar-react..."
+              pm2 restart polar-react
+            else
+              echo "Iniciando app polar-react en puerto 3000..."
+              pm2 start npm --name "polar-react" -- start -- -p 3000
+            fi
+            pm2 save

@@ -4,6 +4,9 @@ import { useState, ChangeEvent } from 'react'
 // ** Next Imports
 import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
 
+// ** Fake-DB Import
+import 'src/@fake-db'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import { styled } from '@mui/material/styles'

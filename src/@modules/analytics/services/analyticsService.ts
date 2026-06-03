@@ -7,7 +7,8 @@ import {
   SalesTrendItem,
   TopProductItem,
   SalesByProductItem,
-  SalesByRouteItem
+  SalesByRouteItem,
+  ClientOption
 } from '../types'
 
 const BASE = '/analytics'
@@ -21,6 +22,16 @@ const analyticsService = {
   /** Fetch available filter options (clients, regions, products) */
   getFilters: async (): Promise<AvailableFilters> => {
     const response = await axiosIns.get(`${BASE}/filters`)
+
+    return response.data.data
+  },
+
+  /** Fetch clients dynamically based on selected routes */
+  getClientsByRoutes: async (routeIds: number[]): Promise<ClientOption[]> => {
+    const params = new URLSearchParams()
+    routeIds.forEach(id => params.append('routes[]', id.toString()))
+    
+    const response = await axiosIns.get(`${BASE}/filters/clients?${params.toString()}`)
 
     return response.data.data
   },
