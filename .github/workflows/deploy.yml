@@ -49,17 +49,14 @@ jobs:
             npm install
             npm run build
 
-            # 5. Instalar PM2 si no existe y reiniciar la app en el puerto 3000
+            # 5. Instalar PM2 si no existe y reiniciar la app en el puerto 3001
             if ! command -v pm2 &> /dev/null; then
               npm install -g pm2
             fi
 
-            pm2 describe polar-react > /dev/null
-            if [ $? -eq 0 ]; then
-              echo "Reiniciando app polar-react..."
-              pm2 restart polar-react
-            else
-              echo "Iniciando app polar-react en puerto 3000..."
-              pm2 start npm --name "polar-react" -- start -- -p 3000
-            fi
+            # Eliminar app vieja si estuviera corriendo en puerto viejo para evitar conflictos
+            pm2 delete polar-react || true
+
+            echo "Iniciando app polar-react en puerto 3001..."
+            pm2 start npm --name "polar-react" -- start -- -p 3001
             pm2 save
