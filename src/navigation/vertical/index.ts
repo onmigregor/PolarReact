@@ -55,6 +55,16 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'admin'
     },
     {
+      title: 'Listados Maestros',
+      icon: 'tabler:database',
+      children: [
+        {
+          title: 'Clientes',
+          path: '/master-lists/clients'
+        }
+      ]
+    },
+    {
       title: 'Email',
       icon: 'tabler:mail',
       path: '/apps/email'
