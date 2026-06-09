@@ -12,7 +12,8 @@ const navigation = (): VerticalNavItemsType => {
         {
           title: 'Analytics',
           path: '/dashboards/analytics'
-        },
+        }
+        /*
         {
           title: 'CRM',
           path: '/dashboards/crm'
@@ -21,18 +22,22 @@ const navigation = (): VerticalNavItemsType => {
           title: 'eCommerce',
           path: '/dashboards/ecommerce'
         }
+        */
       ]
     },
+    /*
     {
       sectionTitle: 'Apps & Pages'
     },
+    */
     {
-      title: 'Analytics',
+      title: 'ESTADISTICAS Y GRAFICAS',
       icon: 'tabler:chart-bar',
       path: '/analytics',
       action: 'read',
       subject: 'analytics'
     },
+    /*
     {
       title: 'Regiones',
       icon: 'tabler:map-pin',
@@ -54,6 +59,7 @@ const navigation = (): VerticalNavItemsType => {
       action: 'read',
       subject: 'admin'
     },
+    */
     {
       title: 'Listados Maestros',
       icon: 'tabler:database',
@@ -63,7 +69,8 @@ const navigation = (): VerticalNavItemsType => {
           path: '/master-lists/clients'
         }
       ]
-    },
+    }
+    /*
     {
       title: 'Email',
       icon: 'tabler:mail',
@@ -657,6 +664,7 @@ const navigation = (): VerticalNavItemsType => {
         }
       ]
     }
+    */
   ]
 }
 
