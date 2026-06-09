@@ -128,7 +128,7 @@ const AnalyticsDashboard = () => {
               <ClientsByTenantChart />
             </Grid>
 
-            {/* Divider */}
+            {/* Commented out other metrics to simplify layout as requested
             <Grid item xs={12}>
               <Divider sx={{ my: 4 }}>
                 <Typography variant='caption' sx={{ color: 'text.disabled', textTransform: 'uppercase' }}>
@@ -137,7 +137,6 @@ const AnalyticsDashboard = () => {
               </Divider>
             </Grid>
 
-            {/* Original Analytics Components */}
             <Grid item xs={12} lg={6}>
               <AnalyticsWebsiteAnalyticsSlider />
             </Grid>
@@ -175,6 +174,7 @@ const AnalyticsDashboard = () => {
             <Grid item xs={12} lg={8}>
               <AnalyticsProject />
             </Grid>
+            */}
           </Grid>
         </KeenSliderWrapper>
       </RechartsWrapper>
