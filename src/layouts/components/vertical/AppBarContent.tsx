@@ -12,11 +12,11 @@ import { Settings } from 'src/@core/context/settingsContext'
 import Autocomplete from 'src/layouts/components/Autocomplete'
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
-import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
+// import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
 import NotificationDropdown, {
   NotificationsType
 } from 'src/@core/layouts/components/shared-components/NotificationDropdown'
-import ShortcutsDropdown, { ShortcutsType } from 'src/@core/layouts/components/shared-components/ShortcutsDropdown'
+// import ShortcutsDropdown, { ShortcutsType } from 'src/@core/layouts/components/shared-components/ShortcutsDropdown'
 
 // ** Hook Import
 import { useAuth } from 'src/hooks/useAuth'
@@ -73,6 +73,7 @@ const notifications: NotificationsType[] = [
   }
 ]
 
+/*
 const shortcuts: ShortcutsType[] = [
   {
     title: 'Calendar',
@@ -123,6 +124,7 @@ const shortcuts: ShortcutsType[] = [
     url: '/pages/dialog-examples'
   }
 ]
+*/
 
 const AppBarContent = (props: Props) => {
   // ** Props
