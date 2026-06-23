@@ -12,7 +12,8 @@ import {
   FamilyOption,
   CategoryOption,
   BrandOption,
-  SegmentOption
+  SegmentOption,
+  GenericOption
 } from '../types'
 
 const defaultStartDate = startOfMonth(new Date())
@@ -27,7 +28,11 @@ export const useAnalyticsFilters = () => {
     families: [],
     categories: [],
     brands: [],
-    segments: []
+    segments: [],
+    fq_codes: [],
+    vendor_groups: [],
+    offices: [],
+    territories: []
   })
   const [filtersLoading, setFiltersLoading] = useState(true)
 
@@ -45,6 +50,12 @@ export const useAnalyticsFilters = () => {
   const [selectedBrands, setSelectedBrands] = useState<BrandOption[]>([])
   const [selectedSegments, setSelectedSegments] = useState<SegmentOption[]>([])
   const [selectedProducts, setSelectedProducts] = useState<ProductOption[]>([])
+
+  // Geo / Franchise Filters
+  const [selectedFqCodes, setSelectedFqCodes] = useState<GenericOption[]>([])
+  const [selectedVendorGroups, setSelectedVendorGroups] = useState<GenericOption[]>([])
+  const [selectedOffices, setSelectedOffices] = useState<GenericOption[]>([])
+  const [selectedTerritories, setSelectedTerritories] = useState<GenericOption[]>([])
 
   // Handle date range change (from template's selectsRange picker)
   const handleDateRangeChange = useCallback((dates: [Date | null, Date | null]) => {
@@ -68,7 +79,7 @@ return selectedFamilies.some(f => f.id === category.cl1_code)
     const matchesFamily = selectedFamilies.length === 0 || selectedFamilies.some(f => f.id === product.cl1_code)
     const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(c => c.id === product.cl2_code)
     const matchesBrand = selectedBrands.length === 0 || selectedBrands.some(b => b.id === product.brand_code)
-    const matchesSegment = selectedSegments.length === 0 || selectedSegments.some(s => s.id === product.segment_code)
+    const matchesSegment = selectedSegments.length === 0 || selectedSegments.some(s => s.id === product.cl3_code)
     
 return matchesFamily && matchesCategory && matchesBrand && matchesSegment
   })
@@ -88,7 +99,11 @@ return matchesFamily && matchesCategory && matchesBrand && matchesSegment
           families: data.families || [],
           categories: data.categories || [],
           brands: data.brands || [],
-          segments: data.segments || []
+          segments: data.segments || [],
+          fq_codes: data.fq_codes || [],
+          vendor_groups: data.vendor_groups || [],
+          offices: data.offices || [],
+          territories: data.territories || []
         })
       } catch (error) {
         console.error('Error loading filters:', error)
@@ -149,16 +164,29 @@ return matchesFamily && matchesCategory && matchesBrand && matchesSegment
       filters.brand_codes = selectedBrands.map(b => b.id)
     }
     if (selectedSegments.length > 0) {
-      filters.segment_codes = selectedSegments.map(s => s.id)
+      filters.cl3_codes = selectedSegments.map(s => s.id)
     }
     if (selectedProducts.length > 0) {
       filters.product_skus = selectedProducts.map(p => p.sku)
+    }
+    if (selectedFqCodes.length > 0) {
+      filters.fq_codes = selectedFqCodes.map(f => f.id)
+    }
+    if (selectedVendorGroups.length > 0) {
+      filters.vendor_groups = selectedVendorGroups.map(v => v.id)
+    }
+    if (selectedOffices.length > 0) {
+      filters.offices = selectedOffices.map(o => o.id)
+    }
+    if (selectedTerritories.length > 0) {
+      filters.territories = selectedTerritories.map(t => t.id)
     }
 
     return filters
   }, [
     startDate, endDate, selectedClients, selectedRegions, selectedRoutes,
-    selectedFamilies, selectedCategories, selectedBrands, selectedSegments, selectedProducts
+    selectedFamilies, selectedCategories, selectedBrands, selectedSegments, selectedProducts,
+    selectedFqCodes, selectedVendorGroups, selectedOffices, selectedTerritories
   ])
 
   return {
@@ -193,6 +221,16 @@ return matchesFamily && matchesCategory && matchesBrand && matchesSegment
     selectedProducts,
     setSelectedProducts,
     filteredProductOptions,
+
+    // Geo / Franchise
+    selectedFqCodes,
+    setSelectedFqCodes,
+    selectedVendorGroups,
+    setSelectedVendorGroups,
+    selectedOffices,
+    setSelectedOffices,
+    selectedTerritories,
+    setSelectedTerritories,
 
     // Builder
     buildFilters

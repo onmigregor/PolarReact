@@ -60,6 +60,16 @@ const AnalyticsPage = () => {
     setSelectedProducts,
     filteredProductOptions,
 
+    // Geo / Franchise
+    selectedFqCodes,
+    setSelectedFqCodes,
+    selectedVendorGroups,
+    setSelectedVendorGroups,
+    selectedOffices,
+    setSelectedOffices,
+    selectedTerritories,
+    setSelectedTerritories,
+
     buildFilters
   } = useAnalyticsFilters()
 
@@ -142,6 +152,15 @@ const AnalyticsPage = () => {
           onProductsChange={setSelectedProducts}
           filteredProductOptions={filteredProductOptions}
           
+          selectedFqCodes={selectedFqCodes}
+          onFqCodesChange={setSelectedFqCodes}
+          selectedVendorGroups={selectedVendorGroups}
+          onVendorGroupsChange={setSelectedVendorGroups}
+          selectedOffices={selectedOffices}
+          onOfficesChange={setSelectedOffices}
+          selectedTerritories={selectedTerritories}
+          onTerritoriesChange={setSelectedTerritories}
+
           onApplyFilters={handleApplyFilters}
           loading={loading}
         />

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -9,6 +9,16 @@ import MenuItem from '@mui/material/MenuItem'
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import IconButton from '@mui/material/IconButton'
+import Box from '@mui/material/Box'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -22,7 +32,8 @@ import {
   BrandOption, 
   SegmentOption, 
   ProductOption,
-  RouteOption
+  RouteOption,
+  GenericOption
 } from 'src/@modules/analytics/types'
 
 interface Props {
@@ -52,6 +63,15 @@ interface Props {
   selectedProducts: ProductOption[]
   onProductsChange: (products: ProductOption[]) => void
   filteredProductOptions: ProductOption[]
+
+  selectedFqCodes?: GenericOption[]
+  onFqCodesChange?: (fq: GenericOption[]) => void
+  selectedVendorGroups?: GenericOption[]
+  onVendorGroupsChange?: (vg: GenericOption[]) => void
+  selectedOffices?: GenericOption[]
+  onOfficesChange?: (offices: GenericOption[]) => void
+  selectedTerritories?: GenericOption[]
+  onTerritoriesChange?: (territories: GenericOption[]) => void
 }
 
 interface MonthOption {
@@ -120,8 +140,17 @@ const AnalyticsFilterHeader = ({
   onSegmentsChange,
   selectedProducts,
   onProductsChange,
-  filteredProductOptions
+  filteredProductOptions,
+  selectedFqCodes,
+  onFqCodesChange,
+  selectedVendorGroups,
+  onVendorGroupsChange,
+  selectedOffices,
+  onOfficesChange,
+  selectedTerritories,
+  onTerritoriesChange
 }: Props) => {
+  const [isOpen, setIsOpen] = useState(false)
   const monthOptions = useMemo(() => generateMonthOptions(), [])
 
   const handleChange = (newValue: string) => {
@@ -133,7 +162,19 @@ const AnalyticsFilterHeader = ({
 
   return (
     <Card>
-      <CardHeader title='Resumen Comercial' sx={{ pb: 0 }} />
+      <CardHeader 
+        title='Resumen Comercial' 
+        sx={{ pb: 0 }} 
+        action={
+          <Button
+            variant='outlined'
+            onClick={() => setIsOpen(true)}
+            startIcon={<Icon icon='tabler:adjustments-horizontal' />}
+          >
+            Más Filtros
+          </Button>
+        }
+      />
       <CardContent>
         <Grid container spacing={4} alignItems='flex-end'>
           {/* Selector de Mes */}
@@ -199,123 +240,202 @@ const AnalyticsFilterHeader = ({
             />
           </Grid>
 
-          {/* Selector de Categorías */}
-          <Grid item xs={12} md={3}>
-            <Autocomplete
-              multiple
-              size='small'
-              options={filteredCategoryOptions || []}
-              getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={selectedCategories}
-              onChange={(_, value) => onCategoriesChange(value)}
-              loading={filtersLoading}
-              limitTags={1}
-              disableCloseOnSelect
-              noOptionsText='Sin opciones'
-              renderInput={(params) => (
-                <CustomTextField {...params} label='Categorías' placeholder={selectedCategories.length === 0 ? 'Todas' : ''} />
-              )}
-            />
-          </Grid>
-
-          {/* Selector de Marcas */}
-          <Grid item xs={12} md={3}>
-            <Autocomplete
-              multiple
-              size='small'
-              options={availableFilters.brands || []}
-              getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={selectedBrands}
-              onChange={(_, value) => onBrandsChange(value)}
-              loading={filtersLoading}
-              limitTags={1}
-              disableCloseOnSelect
-              noOptionsText='Sin opciones'
-              renderInput={(params) => (
-                <CustomTextField {...params} label='Marcas' placeholder={selectedBrands.length === 0 ? 'Todas' : ''} />
-              )}
-            />
-          </Grid>
-
-          {/* Selector de Segmentos */}
-          <Grid item xs={12} md={3}>
-            <Autocomplete
-              multiple
-              size='small'
-              options={availableFilters.segments || []}
-              getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={selectedSegments}
-              onChange={(_, value) => onSegmentsChange(value)}
-              loading={filtersLoading}
-              limitTags={1}
-              disableCloseOnSelect
-              noOptionsText='Sin opciones'
-              renderInput={(params) => (
-                <CustomTextField {...params} label='Segmentos' placeholder={selectedSegments.length === 0 ? 'Todos' : ''} />
-              )}
-            />
-          </Grid>
-
-          {/* Productos */}
-          <Grid item xs={12} md={6}>
-            <Autocomplete
-              multiple
-              size='small'
-              options={filteredProductOptions || []}
-              getOptionLabel={(option) => `${option.name} (${option.sku})`}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={selectedProducts}
-              onChange={(_, value) => onProductsChange(value)}
-              loading={filtersLoading}
-              limitTags={3}
-              disableCloseOnSelect
-              noOptionsText='Sin opciones'
-              renderInput={(params) => (
-                <CustomTextField 
-                  {...params} 
-                  label='Productos Específicos' 
-                  placeholder={selectedProducts.length === 0 ? 'Todos' : ''} 
-                />
-              )}
-            />
-          </Grid>
-
-          {/* Selector de Clientes */}
-          <Grid item xs={12} md={3}>
-            <Autocomplete
-              multiple
-              size='small'
-              options={filteredClientOptions}
-              getOptionLabel={option => option.name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={selectedClients}
-              onChange={(_, value) => onClientsChange(value)}
-              loading={filtersLoading}
-              limitTags={1}
-              disableCloseOnSelect
-              renderInput={params => (
-                <CustomTextField
-                  {...params}
-                  label='Clientes'
-                  placeholder='Todos'
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <>
-                        {filtersLoading ? <CircularProgress size={16} /> : null}
-                        {params.InputProps.endAdornment}
-                      </>
-                    )
-                  }}
-                />
-              )}
-            />
-          </Grid>
         </Grid>
       </CardContent>
+
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} maxWidth='md' fullWidth>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>Más Filtros Generales</span>
+          <IconButton onClick={() => setIsOpen(false)}>
+            <Icon icon='tabler:x' />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={4} sx={{ mt: 1 }}>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.fq_codes || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedFqCodes || []}
+                onChange={(_, value) => onFqCodesChange && onFqCodesChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Código FQ' placeholder={!selectedFqCodes?.length ? 'Todos' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.vendor_groups || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedVendorGroups || []}
+                onChange={(_, value) => onVendorGroupsChange && onVendorGroupsChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Grupo de Vendedor' placeholder={!selectedVendorGroups?.length ? 'Todos' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.offices || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedOffices || []}
+                onChange={(_, value) => onOfficesChange && onOfficesChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Oficina' placeholder={!selectedOffices?.length ? 'Todas' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.territories || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedTerritories || []}
+                onChange={(_, value) => onTerritoriesChange && onTerritoriesChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Territorio' placeholder={!selectedTerritories?.length ? 'Todos' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.brands || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedBrands}
+                onChange={(_, value) => onBrandsChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Marcas' placeholder={selectedBrands.length === 0 ? 'Todas' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.segments || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedSegments}
+                onChange={(_, value) => onSegmentsChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Segmentos' placeholder={selectedSegments.length === 0 ? 'Todos' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={filteredCategoryOptions || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedCategories}
+                onChange={(_, value) => onCategoriesChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Categorías' placeholder={selectedCategories.length === 0 ? 'Todas' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={filteredClientOptions}
+                getOptionLabel={option => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedClients}
+                onChange={(_, value) => onClientsChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                renderInput={params => (
+                  <CustomTextField
+                    {...params}
+                    label='Clientes (Se requiere elegir Rutas antes)'
+                    placeholder={!selectedRoutes?.length ? 'Seleccione ruta(s) primero...' : 'Todos'}
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <>
+                          {filtersLoading ? <CircularProgress size={16} /> : null}
+                          {params.InputProps.endAdornment}
+                        </>
+                      )
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={filteredProductOptions || []}
+                getOptionLabel={(option) => `${option.name} (${option.sku})`}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedProducts}
+                onChange={(_, value) => onProductsChange(value)}
+                loading={filtersLoading}
+                limitTags={3}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField 
+                    {...params} 
+                    label='Productos Específicos' 
+                    placeholder={selectedProducts.length === 0 ? 'Todos' : ''} 
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button variant='contained' onClick={() => setIsOpen(false)}>Listo</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   )
 }

@@ -1,5 +1,5 @@
 // ** Analytics Filters Component
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -10,6 +10,11 @@ import Typography from '@mui/material/Typography'
 
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import IconButton from '@mui/material/IconButton'
 
 // ** Third Party Imports
 import format from 'date-fns/format'
@@ -30,7 +35,8 @@ import {
   BrandOption,
   SegmentOption,
   RouteOption,
-  AvailableFilters 
+  AvailableFilters,
+  GenericOption
 } from '../../types'
 
 interface AnalyticsFiltersProps {
@@ -62,6 +68,15 @@ interface AnalyticsFiltersProps {
   onProductsChange: (products: ProductOption[]) => void
   filteredProductOptions: ProductOption[]
   
+  selectedFqCodes: GenericOption[]
+  onFqCodesChange: (fq: GenericOption[]) => void
+  selectedVendorGroups: GenericOption[]
+  onVendorGroupsChange: (vg: GenericOption[]) => void
+  selectedOffices: GenericOption[]
+  onOfficesChange: (offices: GenericOption[]) => void
+  selectedTerritories: GenericOption[]
+  onTerritoriesChange: (territories: GenericOption[]) => void
+
   onApplyFilters: () => void
   loading: boolean
 }
@@ -96,9 +111,19 @@ const AnalyticsFilters = ({
   selectedProducts,
   onProductsChange,
   filteredProductOptions,
+  selectedFqCodes,
+  onFqCodesChange,
+  selectedVendorGroups,
+  onVendorGroupsChange,
+  selectedOffices,
+  onOfficesChange,
+  selectedTerritories,
+  onTerritoriesChange,
   onApplyFilters,
   loading
 }: AnalyticsFiltersProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   // Custom input matching template's PickersRange.tsx style
   const CustomInput = forwardRef((props: PickerProps, ref) => {
     const startFormatted = props.start ? format(props.start, 'dd/MM/yyyy') : ''
@@ -125,15 +150,25 @@ const AnalyticsFilters = ({
           <Typography variant='subtitle2' sx={{ color: 'text.secondary', fontWeight: 600 }}>
             Filtros Generales
           </Typography>
-          <Button
-            variant='contained'
-            onClick={onApplyFilters}
-            disabled={loading}
-            startIcon={loading ? <CircularProgress size={18} color='inherit' /> : <Icon icon='tabler:search' />}
-            sx={{ minWidth: 140, height: 40 }}
-          >
-            {loading ? 'Cargando...' : 'Consultar'}
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant='outlined'
+              onClick={() => setIsOpen(true)}
+              disabled={loading}
+              startIcon={<Icon icon='tabler:adjustments-horizontal' />}
+            >
+              Más Filtros
+            </Button>
+            <Button
+              variant='contained'
+              onClick={onApplyFilters}
+              disabled={loading}
+              startIcon={loading ? <CircularProgress size={18} color='inherit' /> : <Icon icon='tabler:search' />}
+              sx={{ minWidth: 140, height: 40 }}
+            >
+              {loading ? 'Cargando...' : 'Consultar'}
+            </Button>
+          </Box>
         </Box>
 
         <Grid container spacing={4}>
@@ -314,6 +349,94 @@ const AnalyticsFilters = ({
               </Grid>
         </Box>
       </CardContent>
+
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} maxWidth='md' fullWidth>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant='h6'>Más Filtros Generales</Typography>
+          <IconButton onClick={() => setIsOpen(false)}>
+            <Icon icon='tabler:x' />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={4} sx={{ mt: 1 }}>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.fq_codes || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedFqCodes}
+                onChange={(_, value) => onFqCodesChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Código FQ' placeholder={selectedFqCodes.length === 0 ? 'Todos' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.vendor_groups || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedVendorGroups}
+                onChange={(_, value) => onVendorGroupsChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Grupo de Vendedor' placeholder={selectedVendorGroups.length === 0 ? 'Todos' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.offices || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedOffices}
+                onChange={(_, value) => onOfficesChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Oficina' placeholder={selectedOffices.length === 0 ? 'Todas' : ''} />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                multiple
+                size='small'
+                options={availableFilters.territories || []}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedTerritories}
+                onChange={(_, value) => onTerritoriesChange(value)}
+                loading={filtersLoading}
+                limitTags={1}
+                disableCloseOnSelect
+                noOptionsText='Sin opciones'
+                renderInput={(params) => (
+                  <CustomTextField {...params} label='Territorio' placeholder={selectedTerritories.length === 0 ? 'Todos' : ''} />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button variant='contained' onClick={() => setIsOpen(false)}>Listo</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   )
 }

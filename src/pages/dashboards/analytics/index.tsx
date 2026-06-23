@@ -43,6 +43,14 @@ const AnalyticsDashboard = () => {
     selectedProducts,
     setSelectedProducts,
     filteredProductOptions,
+    selectedFqCodes,
+    setSelectedFqCodes,
+    selectedVendorGroups,
+    setSelectedVendorGroups,
+    selectedOffices,
+    setSelectedOffices,
+    selectedTerritories,
+    setSelectedTerritories,
     handleDateRangeChange,
     buildFilters
   } = useAnalyticsFilters()
@@ -86,6 +94,14 @@ const AnalyticsDashboard = () => {
                 selectedProducts={selectedProducts}
                 onProductsChange={setSelectedProducts}
                 filteredProductOptions={filteredProductOptions}
+                selectedFqCodes={selectedFqCodes}
+                onFqCodesChange={setSelectedFqCodes}
+                selectedVendorGroups={selectedVendorGroups}
+                onVendorGroupsChange={setSelectedVendorGroups}
+                selectedOffices={selectedOffices}
+                onOfficesChange={setSelectedOffices}
+                selectedTerritories={selectedTerritories}
+                onTerritoriesChange={setSelectedTerritories}
               />
             </Grid>
 

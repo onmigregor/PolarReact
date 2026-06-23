@@ -11,7 +11,11 @@ export interface ReportFilters {
   cl1_codes?: string[]
   cl2_codes?: string[]
   brand_codes?: string[]
-  segment_codes?: string[]
+  cl3_codes?: string[]
+  fq_codes?: string[]
+  vendor_groups?: string[]
+  offices?: string[]
+  territories?: string[]
 }
 
 export interface ClientOption {
@@ -66,6 +70,11 @@ export interface ProductOption {
   segment_code: string | null
 }
 
+export interface GenericOption {
+  id: string
+  name: string
+}
+
 export interface AvailableFilters {
   routes: RouteOption[]
   regions: RegionOption[]
@@ -74,6 +83,10 @@ export interface AvailableFilters {
   categories: CategoryOption[]
   brands: BrandOption[]
   segments: SegmentOption[]
+  fq_codes: GenericOption[]
+  vendor_groups: GenericOption[]
+  offices: GenericOption[]
+  territories: GenericOption[]
 }
 
 // === Report Response Types ===
