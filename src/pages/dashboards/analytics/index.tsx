@@ -12,6 +12,7 @@ import SalesByRouteChart from 'src/views/dashboards/analytics/SalesByRouteChart'
 import TopGroupsByLitersChart from 'src/views/dashboards/analytics/TopGroupsByLitersChart'
 import TopGroupsByKilosChart from 'src/views/dashboards/analytics/TopGroupsByKilosChart'
 import ClientsByTenantChart from 'src/views/dashboards/analytics/ClientsByTenantChart'
+import ClientsTrendChart from 'src/views/dashboards/analytics/ClientsTrendChart'
 
 // ** Hook Import
 import { useAnalyticsFilters } from 'src/@modules/analytics/hooks/useAnalyticsFilters'
@@ -108,6 +109,11 @@ const AnalyticsDashboard = () => {
             {/* Sales Trend Chart (Full Width) */}
             <Grid item xs={12}>
               <SalesTrendChart filters={buildFilters()} />
+            </Grid>
+
+            {/* Clients Trend Chart (Full Width) */}
+            <Grid item xs={12}>
+              <ClientsTrendChart />
             </Grid>
 
             {/* Top Products & Sales by Route (Two Columns) */}
