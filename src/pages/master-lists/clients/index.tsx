@@ -166,6 +166,83 @@ const MasterClientsPage = () => {
       )
     },
     {
+      id: 'grupo_vendedor',
+      label: 'Grupo Vendedor',
+      minWidth: 140,
+      render: row => (
+        <Typography variant='body2'>
+          {row.grupo_vendedor || '-'}
+        </Typography>
+      )
+    },
+    {
+      id: 'zona_fq',
+      label: 'Zona / Cód. FQ',
+      minWidth: 140,
+      render: row => (
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography variant='body2'>
+            {row.zona_venta || '-'}
+          </Typography>
+          {row.codigo_fq && (
+            <Typography variant='caption' color='text.secondary'>
+              FQ: {row.codigo_fq}
+            </Typography>
+          )}
+        </Box>
+      )
+    },
+    {
+      id: 'oficina',
+      label: 'Oficina',
+      minWidth: 120,
+      render: row => (
+        <Typography variant='body2'>
+          {row.oficina || '-'}
+        </Typography>
+      )
+    },
+    {
+      id: 'territorio',
+      label: 'Territorio',
+      minWidth: 120,
+      render: row => (
+        <Typography variant='body2'>
+          {row.territorio || '-'}
+        </Typography>
+      )
+    },
+    {
+      id: 'direccion',
+      label: 'Dirección Física',
+      minWidth: 250,
+      render: row => (
+        <Typography variant='body2' noWrap title={row.direccion || ''} sx={{ maxWidth: 250, textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {row.direccion || '-'}
+        </Typography>
+      )
+    },
+    {
+      id: 'coordenadas',
+      label: 'Coordenadas (Lat, Lng)',
+      minWidth: 180,
+      render: row => (
+        <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>
+          {(row.latitud || row.longitud) ? `${row.latitud || '?'}, ${row.longitud || '?'}` : '-'}
+        </Typography>
+      )
+    },
+    {
+      id: 'cedula_coordinador',
+      label: 'CI Coordinador (PV)',
+      minWidth: 160,
+      render: row => (
+        <Typography variant='body2'>
+          {row.cedula_coordinador || '-'}
+        </Typography>
+      )
+    },
+    {
       id: 'company_route_name',
       label: 'Cuenta / Sucursal Tenant',
       minWidth: 200,
