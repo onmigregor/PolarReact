@@ -66,6 +66,7 @@ export interface ProductOption {
   brand: string | null
   cl1_code: string | null
   cl2_code: string | null
+  cl3_code: string | null
   brand_code: string | null
   segment_code: string | null
 }
