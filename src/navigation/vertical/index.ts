@@ -16,13 +16,6 @@ const navigation = (): VerticalNavItemsType => {
       ]
     },
     {
-      title: 'ESTADISTICAS Y GRAFICAS',
-      icon: 'tabler:chart-bar',
-      path: '/analytics',
-      action: 'read',
-      subject: 'analytics'
-    },
-    {
       title: 'Listados Maestros',
       icon: 'tabler:database',
       children: [
