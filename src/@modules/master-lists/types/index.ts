@@ -19,6 +19,15 @@ export interface MasterClientType {
   registered_at_tenant: string | null
   created_at: string | null
   updated_at: string | null
+  direccion?: string | null
+  latitud?: string | null
+  longitud?: string | null
+  zona_venta?: string | null
+  oficina?: string | null
+  territorio?: string | null
+  grupo_vendedor?: string | null
+  codigo_fq?: string | null
+  cedula_coordinador?: string | null
 }
 
 export interface PaginationMeta {
