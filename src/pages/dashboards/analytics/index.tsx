@@ -13,6 +13,7 @@ import TopGroupsByLitersChart from 'src/views/dashboards/analytics/TopGroupsByLi
 import TopGroupsByKilosChart from 'src/views/dashboards/analytics/TopGroupsByKilosChart'
 import ClientsByTenantChart from 'src/views/dashboards/analytics/ClientsByTenantChart'
 import ClientsTrendChart from 'src/views/dashboards/analytics/ClientsTrendChart'
+import PortfolioVariationChart from 'src/views/dashboards/analytics/PortfolioVariationChart'
 
 // ** Hook Import
 import { useAnalyticsFilters } from 'src/@modules/analytics/hooks/useAnalyticsFilters'
@@ -132,9 +133,12 @@ const AnalyticsDashboard = () => {
               <TopGroupsByKilosChart filters={buildFilters()} />
             </Grid>
 
-            {/* Clientes por Tenant (debajo de Grupos por Litros) */}
+            {/* Clientes por Tenant y Variación de Cartera */}
             <Grid item xs={12} md={6}>
               <ClientsByTenantChart />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <PortfolioVariationChart />
             </Grid>
 
           </Grid>
