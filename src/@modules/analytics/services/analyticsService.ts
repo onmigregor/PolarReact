@@ -62,6 +62,13 @@ const analyticsService = {
     const response = await axiosIns.post(`${BASE}/reports/sales-by-route`, filters)
 
     return response.data
+  },
+
+  /** Portfolio Variation: SAP vs Smart FQ variation per territory */
+  getPortfolioVariation: async (): Promise<any> => {
+    const response = await axiosIns.post(`${BASE}/reports/portfolio-variation`)
+
+    return response.data
   }
 }
 

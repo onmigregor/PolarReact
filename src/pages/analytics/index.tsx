@@ -15,6 +15,7 @@ import SalesTrendChart from 'src/@modules/analytics/components/charts/SalesTrend
 import TopProductsChart from 'src/@modules/analytics/components/charts/TopProductsChart'
 import SalesByProductChart from 'src/@modules/analytics/components/charts/SalesByProductChart'
 import SalesByRouteChart from 'src/@modules/analytics/components/charts/SalesByRouteChart'
+import PortfolioVariationChart from 'src/@modules/analytics/components/charts/PortfolioVariationChart'
 
 // ** Module Hooks & Services
 import { useAnalyticsFilters } from 'src/@modules/analytics/hooks/useAnalyticsFilters'
@@ -80,6 +81,8 @@ const AnalyticsPage = () => {
   const [topProducts, setTopProducts] = useState<TopProductItem[]>([])
   const [salesByProduct, setSalesByProduct] = useState<SalesByProductItem[]>([])
   const [salesByRoute, setSalesByRoute] = useState<SalesByRouteItem[]>([])
+  const [portfolioVariation, setPortfolioVariation] = useState<any[]>([])
+  const [portfolioTotals, setPortfolioTotals] = useState<any | null>(null)
   const [meta, setMeta] = useState<ReportMeta | null>(null)
 
   // Fetch all reports
@@ -89,18 +92,21 @@ const AnalyticsPage = () => {
     setHasQueried(true)
 
     try {
-      // Fetch all 4 reports in parallel
-      const [trendRes, topRes, productRes, routeRes] = await Promise.all([
+      // Fetch all reports in parallel
+      const [trendRes, topRes, productRes, routeRes, portfolioRes] = await Promise.all([
         analyticsService.getSalesTrend(filters),
         analyticsService.getTopProducts(filters),
         analyticsService.getSalesByProduct(filters),
-        analyticsService.getSalesByRoute(filters)
+        analyticsService.getSalesByRoute(filters),
+        analyticsService.getPortfolioVariation()
       ])
 
       setSalesTrend(trendRes.data)
       setTopProducts(topRes.data)
       setSalesByProduct(productRes.data)
       setSalesByRoute(routeRes.data)
+      setPortfolioVariation(portfolioRes.data.territories)
+      setPortfolioTotals(portfolioRes.data.totals)
       setMeta(trendRes.meta)
     } catch (error) {
       console.error('Error fetching reports:', error)
@@ -203,6 +209,11 @@ const AnalyticsPage = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <SalesByRouteChart data={salesByRoute} loading={loading && hasQueried} />
+          </Grid>
+
+          {/* Portfolio Variation — Side by side with Sales by Product */}
+          <Grid item xs={12} md={6}>
+            <PortfolioVariationChart data={portfolioVariation} totals={portfolioTotals} loading={loading && hasQueried} />
           </Grid>
 
           {/* Sales by Product — Full width */}
