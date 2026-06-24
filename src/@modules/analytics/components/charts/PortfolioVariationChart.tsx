@@ -148,8 +148,6 @@ const PortfolioVariationChart = ({ data, totals, loading }: Props) => {
                 </TableHead>
                 <TableBody>
                   {data.map((item, index) => {
-                    const total = item.sap + item.smart_fq
-                    
                     return (
                       <TableRow key={index}>
                         <TableCell>
