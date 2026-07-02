@@ -8,6 +8,8 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Skeleton from '@mui/material/Skeleton'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 
 // ** Third Party Imports
 import {
@@ -76,6 +78,7 @@ const TopProductsChart = ({ filters }: Props) => {
   // ** States
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<TopProductItem[]>([])
+  const [source, setSource] = useState<'sales' | 'orders'>('sales')
 
   // ** Fetch data
   useEffect(() => {
@@ -86,7 +89,8 @@ const TopProductsChart = ({ filters }: Props) => {
       try {
         const response = await axios.post('/analytics/reports/top-products', {
           ...filters,
-          limit: 10
+          limit: 10,
+          source
         })
 
         if (response.data.success) {
@@ -101,7 +105,7 @@ const TopProductsChart = ({ filters }: Props) => {
     }
 
     fetchData()
-  }, [filters])
+  }, [filters, source])
 
   const chartData = data.map(item => ({
     ...item,
@@ -112,8 +116,21 @@ const TopProductsChart = ({ filters }: Props) => {
     <Card>
       <CardHeader
         title='🏆 Top Productos'
-        subheader={loading ? 'Cargando...' : `${data.length} productos más vendidos`}
+        subheader={loading ? 'Cargando...' : `${data.length} productos más ${source === 'orders' ? 'pedidos' : 'vendidos'}`}
         subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
+        action={
+          <ToggleButtonGroup
+            size='small'
+            exclusive
+            value={source}
+            onChange={(e, value) => {
+              if (value) setSource(value)
+            }}
+          >
+            <ToggleButton value='sales' sx={{ py: 1, px: 3 }}>Ventas</ToggleButton>
+            <ToggleButton value='orders' sx={{ py: 1, px: 3 }}>Pedidos</ToggleButton>
+          </ToggleButtonGroup>
+        }
       />
       <CardContent>
         {loading ? (

@@ -43,10 +43,10 @@ const analyticsService = {
     return response.data
   },
 
-  /** Top Products: ranked by quantity sold */
-  getTopProducts: async (filters: ReportFilters, limit = 10): Promise<ReportResponse<TopProductItem>> => {
-    const response = await axiosIns.post(`${BASE}/reports/top-products`, { ...filters, limit })
-
+  /** Top Products: ranked by quantity sold or ordered */
+  getTopProducts: async (filters: ReportFilters, limit = 10, source = 'sales'): Promise<ReportResponse<TopProductItem>> => {
+    const response = await axiosIns.post(`${BASE}/reports/top-products`, { ...filters, limit, source })
+ 
     return response.data
   },
 
