@@ -14,6 +14,8 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 
 // ** Third Party Imports
 import {
@@ -89,6 +91,7 @@ const SalesByRouteChart = ({ filters }: Props) => {
   // ** States
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<SalesByRouteItem[]>([])
+  const [source, setSource] = useState<'sales' | 'orders'>('sales')
 
   // ** Fetch data
   useEffect(() => {
@@ -97,7 +100,10 @@ const SalesByRouteChart = ({ filters }: Props) => {
 
       setLoading(true)
       try {
-        const response = await axios.post('/analytics/reports/sales-by-route', filters)
+        const response = await axios.post('/analytics/reports/sales-by-route', {
+          ...filters,
+          source
+        })
 
         if (response.data.success) {
           setData(response.data.data)
@@ -111,16 +117,29 @@ const SalesByRouteChart = ({ filters }: Props) => {
     }
 
     fetchData()
-  }, [filters])
+  }, [filters, source])
 
   const totalUsd = data.reduce((sum, item) => sum + item.total_billed_usd, 0)
 
   return (
     <Card>
       <CardHeader
-        title='🚛 Ventas por Ruta'
+        title={source === 'orders' ? '🚛 Pedidos por Ruta' : '🚛 Ventas por Ruta'}
         subheader={loading ? 'Cargando...' : `${data.length} rutas | $${totalUsd.toLocaleString('es-VE', { minimumFractionDigits: 2 })} USD total`}
         subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
+        action={
+          <ToggleButtonGroup
+            size='small'
+            exclusive
+            value={source}
+            onChange={(e, value) => {
+              if (value) setSource(value)
+            }}
+          >
+            <ToggleButton value='sales' sx={{ py: 1, px: 3 }}>Ventas</ToggleButton>
+            <ToggleButton value='orders' sx={{ py: 1, px: 3 }}>Pedidos</ToggleButton>
+          </ToggleButtonGroup>
+        }
       />
       <CardContent>
         {loading ? (

@@ -57,10 +57,10 @@ const analyticsService = {
     return response.data
   },
 
-  /** Sales by Route: totals per route per client */
-  getSalesByRoute: async (filters: ReportFilters): Promise<ReportResponse<SalesByRouteItem>> => {
-    const response = await axiosIns.post(`${BASE}/reports/sales-by-route`, filters)
-
+  /** Sales or Orders by Route: totals per route per client */
+  getSalesByRoute: async (filters: ReportFilters, source = 'sales'): Promise<ReportResponse<SalesByRouteItem>> => {
+    const response = await axiosIns.post(`${BASE}/reports/sales-by-route`, { ...filters, source })
+ 
     return response.data
   },
 
