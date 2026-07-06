@@ -93,7 +93,6 @@ const SalesByRouteChart = ({ filters }: Props) => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<SalesByRouteItem[]>([])
   const [source, setSource] = useState<'sales' | 'orders'>('sales')
-  const [currency, setCurrency] = useState<'usd' | 'bs'>('usd')
 
   // ** Fetch data
   useEffect(() => {
@@ -108,16 +107,7 @@ const SalesByRouteChart = ({ filters }: Props) => {
         })
 
         if (response.data.success) {
-          const fetchedData = response.data.data
-          setData(fetchedData)
-          
-          // Auto fallback to 'bs' if all USD values are 0
-          const hasUsd = fetchedData.some((item: any) => item.total_billed_usd > 0)
-          if (!hasUsd && fetchedData.length > 0) {
-            setCurrency('bs')
-          } else {
-            setCurrency('usd')
-          }
+          setData(response.data.data)
         }
       } catch (error) {
         console.error('Error fetching sales by route:', error)
@@ -130,40 +120,26 @@ const SalesByRouteChart = ({ filters }: Props) => {
     fetchData()
   }, [filters, source])
 
-  const totalValue = data.reduce((sum, item) => sum + (currency === 'usd' ? item.total_billed_usd : item.total_billed_bs), 0)
+  const totalUsd = data.reduce((sum, item) => sum + item.total_billed_usd, 0)
 
   return (
     <Card>
       <CardHeader
         title={source === 'orders' ? '🚛 Pedidos por Ruta' : '🚛 Ventas por Ruta'}
-        subheader={loading ? 'Cargando...' : `${data.length} rutas | ${currency === 'usd' ? '$' : ''}${totalValue.toLocaleString('es-VE', { minimumFractionDigits: 2 })} ${currency === 'usd' ? 'USD' : 'Bs.'} total`}
+        subheader={loading ? 'Cargando...' : `${data.length} rutas | $${totalUsd.toLocaleString('es-VE', { minimumFractionDigits: 2 })} USD total`}
         subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
         action={
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <ToggleButtonGroup
-              size='small'
-              exclusive
-              value={currency}
-              onChange={(e, value) => {
-                if (value) setCurrency(value)
-              }}
-            >
-              <ToggleButton value='usd' sx={{ py: 1, px: 2 }}>USD</ToggleButton>
-              <ToggleButton value='bs' sx={{ py: 1, px: 2 }}>Bs</ToggleButton>
-            </ToggleButtonGroup>
-
-            <ToggleButtonGroup
-              size='small'
-              exclusive
-              value={source}
-              onChange={(e, value) => {
-                if (value) setSource(value)
-              }}
-            >
-              <ToggleButton value='sales' sx={{ py: 1, px: 3 }}>Ventas</ToggleButton>
-              <ToggleButton value='orders' sx={{ py: 1, px: 3 }}>Pedidos</ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
+          <ToggleButtonGroup
+            size='small'
+            exclusive
+            value={source}
+            onChange={(e, value) => {
+              if (value) setSource(value)
+            }}
+          >
+            <ToggleButton value='sales' sx={{ py: 1, px: 3 }}>Ventas</ToggleButton>
+            <ToggleButton value='orders' sx={{ py: 1, px: 3 }}>Pedidos</ToggleButton>
+          </ToggleButtonGroup>
         }
       />
       <CardContent>
@@ -181,7 +157,7 @@ const SalesByRouteChart = ({ filters }: Props) => {
                 <PieChart>
                   <Pie
                     data={data}
-                    dataKey={currency === 'usd' ? 'total_billed_usd' : 'total_billed_bs'}
+                    dataKey='total_billed_usd'
                     nameKey='route'
                     cx='50%'
                     cy='50%'
@@ -206,7 +182,7 @@ const SalesByRouteChart = ({ filters }: Props) => {
                   <TableRow>
                     <TableCell>Cliente / Ruta</TableCell>
                     <TableCell align='right'>Transacciones</TableCell>
-                    <TableCell align='right'>{currency === 'usd' ? 'USD' : 'Bs.'}</TableCell>
+                    <TableCell align='right'>USD</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -223,9 +199,7 @@ const SalesByRouteChart = ({ filters }: Props) => {
                       </TableCell>
                       <TableCell align='right'>
                         <Typography variant='body2' fontWeight={600}>
-                          {currency === 'usd' 
-                            ? `$${item.total_billed_usd.toLocaleString('es-VE', { minimumFractionDigits: 2 })}` 
-                            : `${item.total_billed_bs.toLocaleString('es-VE', { minimumFractionDigits: 2 })} Bs.`}
+                          ${item.total_billed_usd.toLocaleString('es-VE', { minimumFractionDigits: 2 })}
                         </Typography>
                       </TableCell>
                     </TableRow>
