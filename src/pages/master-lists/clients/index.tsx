@@ -8,6 +8,13 @@ import Box from '@mui/material/Box'
 import MenuItem from '@mui/material/MenuItem'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import IconButton from '@mui/material/IconButton'
+import Grid from '@mui/material/Grid'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -30,11 +37,22 @@ const MasterClientsPage = () => {
   const [tp2, setTp2] = useState<string>('')
   const [cit, setCit] = useState<string>('')
   const [hasCep, setHasCep] = useState<boolean>(false)
+  const [codigoFq, setCodigoFq] = useState<string>('')
+  const [grupoVendedor, setGrupoVendedor] = useState<string>('')
+  const [oficina, setOficina] = useState<string>('')
+  const [territorio, setTerritorio] = useState<string>('')
+
+  // ** Modal State
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false)
 
   // ** Dropdown options state
   const [tp1Options, setTp1Options] = useState<FilterOption[]>([])
   const [tp2Options, setTp2Options] = useState<FilterOption[]>([])
   const [citOptions, setCitOptions] = useState<FilterOption[]>([])
+  const [fqOptions, setFqOptions] = useState<FilterOption[]>([])
+  const [vgOptions, setVgOptions] = useState<FilterOption[]>([])
+  const [officeOptions, setOfficeOptions] = useState<FilterOption[]>([])
+  const [territoryOptions, setTerritoryOptions] = useState<FilterOption[]>([])
 
   // ** Hook for Data Table
   const {
@@ -61,6 +79,10 @@ const MasterClientsPage = () => {
           setTp1Options(response.data.tp1_codes || [])
           setTp2Options(response.data.tp2_codes || [])
           setCitOptions(response.data.cit_codes || [])
+          setFqOptions(response.data.fq_codes || [])
+          setVgOptions(response.data.vendor_groups || [])
+          setOfficeOptions(response.data.offices || [])
+          setTerritoryOptions(response.data.territories || [])
         }
       } catch (error) {
         console.error('Error loading filter options:', error)
@@ -116,12 +138,52 @@ const MasterClientsPage = () => {
     handleFilterChange({ has_cep: checked })
   }
 
-  // ** Table Column Definitions
+  const handleCodigoFqChange = (value: string) => {
+    setCodigoFq(value)
+    handleFilterChange({ codigo_fq: value })
+  }
+
+  const handleGrupoVendedorChange = (value: string) => {
+    setGrupoVendedor(value)
+    handleFilterChange({ grupo_vendedor: value })
+  }
+
+  const handleOficinaChange = (value: string) => {
+    setOficina(value)
+    handleFilterChange({ oficina: value })
+  }
+
+  const handleTerritorioChange = (value: string) => {
+    setTerritorio(value)
+    handleFilterChange({ territorio: value })
+  }
+
+  const handleResetAllFilters = () => {
+    setTp1('')
+    setTp2('')
+    setCit('')
+    setCodigoFq('')
+    setGrupoVendedor('')
+    setOficina('')
+    setTerritorio('')
+    handleFilterChange({
+      tp1_code: '',
+      tp2_code: '',
+      cit_code: '',
+      codigo_fq: '',
+      grupo_vendedor: '',
+      oficina: '',
+      territorio: ''
+    })
+    setIsFilterModalOpen(false)
+  }
+
+  // ** Table Column Definitions (Strictly structured to the 10 requested columns)
   const columns: Column<MasterClientType>[] = [
     {
       id: 'cep',
-      label: 'Cód. Cliente (CEP)',
-      minWidth: 140,
+      label: 'Código Cep',
+      minWidth: 130,
       render: row => (
         <Typography variant='body2' sx={{ fontWeight: 600, color: row.cep ? 'text.primary' : 'text.disabled' }}>
           {row.cep || 'Sin Código'}
@@ -130,25 +192,28 @@ const MasterClientsPage = () => {
     },
     {
       id: 'cliente',
-      label: 'Nombre / Razón Social',
-      minWidth: 220,
+      label: 'Nombre',
+      minWidth: 180,
       render: row => (
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant='body2' sx={{ fontWeight: 500 }}>
-            {row.cliente || row.cus_name || 'Sin Nombre'}
-          </Typography>
-          {(row.cus_business_name && row.cus_business_name !== row.cliente) && (
-            <Typography variant='caption' color='text.secondary'>
-              {row.cus_business_name}
-            </Typography>
-          )}
-        </Box>
+        <Typography variant='body2' sx={{ fontWeight: 500 }}>
+          {row.cliente || row.cus_name || 'Sin Nombre'}
+        </Typography>
+      )
+    },
+    {
+      id: 'cus_business_name',
+      label: 'Razón Social',
+      minWidth: 180,
+      render: row => (
+        <Typography variant='body2'>
+          {row.cus_business_name || '-'}
+        </Typography>
       )
     },
     {
       id: 'cus_tax_id1',
-      label: 'RIF',
-      minWidth: 130,
+      label: 'Rif',
+      minWidth: 120,
       render: row => (
         <Typography variant='body2'>
           {row.cus_tax_id1 || 'N/A'}
@@ -156,46 +221,49 @@ const MasterClientsPage = () => {
       )
     },
     {
-      id: 'ruta',
-      label: 'Ruta',
-      minWidth: 110,
+      id: 'tp2_code',
+      label: 'Tipo de cliente',
+      minWidth: 140,
       render: row => (
         <Typography variant='body2'>
-          {row.ruta || 'S/R'}
+          {row.tp2_code || '-'}
         </Typography>
       )
     },
     {
-      id: 'grupo_vendedor',
-      label: 'Grupo Vendedor',
-      minWidth: 140,
+      id: 'direccion',
+      label: 'Dirección física',
+      minWidth: 220,
       render: row => (
-        <Typography variant='body2'>
-          {row.grupo_vendedor || '-'}
+        <Typography variant='body2' noWrap title={row.direccion || ''} sx={{ maxWidth: 220, textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {row.direccion || '-'}
         </Typography>
       )
     },
     {
-      id: 'zona_fq',
-      label: 'Zona / Cód. FQ',
+      id: 'telefono',
+      label: 'Teléfono',
       minWidth: 140,
       render: row => (
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant='body2'>
-            {row.zona_venta || '-'}
-          </Typography>
-          {row.codigo_fq && (
-            <Typography variant='caption' color='text.secondary'>
-              FQ: {row.codigo_fq}
-            </Typography>
-          )}
-        </Box>
+        <Typography variant='body2'>
+          {row.cus_phone || '-'}
+        </Typography>
+      )
+    },
+    {
+      id: 'zona_venta',
+      label: 'Zona de venta',
+      minWidth: 140,
+      render: row => (
+        <Typography variant='body2'>
+          {row.zona_venta || '-'}
+        </Typography>
       )
     },
     {
       id: 'oficina',
       label: 'Oficina',
-      minWidth: 120,
+      minWidth: 130,
       render: row => (
         <Typography variant='body2'>
           {row.oficina || '-'}
@@ -205,104 +273,11 @@ const MasterClientsPage = () => {
     {
       id: 'territorio',
       label: 'Territorio',
-      minWidth: 120,
+      minWidth: 130,
       render: row => (
         <Typography variant='body2'>
           {row.territorio || '-'}
         </Typography>
-      )
-    },
-    {
-      id: 'direccion',
-      label: 'Dirección Física',
-      minWidth: 250,
-      render: row => (
-        <Typography variant='body2' noWrap title={row.direccion || ''} sx={{ maxWidth: 250, textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          {row.direccion || '-'}
-        </Typography>
-      )
-    },
-    {
-      id: 'coordenadas',
-      label: 'Coordenadas (Lat, Lng)',
-      minWidth: 180,
-      render: row => (
-        <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>
-          {(row.latitud || row.longitud) ? `${row.latitud || '?'}, ${row.longitud || '?'}` : '-'}
-        </Typography>
-      )
-    },
-    {
-      id: 'cedula_coordinador',
-      label: 'CI Coordinador (PV)',
-      minWidth: 160,
-      render: row => (
-        <Typography variant='body2'>
-          {row.cedula_coordinador || '-'}
-        </Typography>
-      )
-    },
-    {
-      id: 'company_route_name',
-      label: 'Cuenta / Sucursal Tenant',
-      minWidth: 200,
-      render: row => (
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant='body2'>
-            {row.company_route_name || '-'}
-          </Typography>
-          {row.company_route_db && (
-            <Typography variant='caption' sx={{ fontFamily: 'monospace' }} color='text.secondary'>
-              {row.company_route_db}
-            </Typography>
-          )}
-        </Box>
-      )
-    },
-    {
-      id: 'tp2_code',
-      label: 'Clase 2 (Sucursal)',
-      minWidth: 150,
-      render: row => (
-        <Typography variant='body2'>
-          {row.tp2_code || '-'}
-        </Typography>
-      )
-    },
-    {
-      id: 'cit_code',
-      label: 'Clase 3 (Ciudad)',
-      minWidth: 140,
-      render: row => (
-        <Typography variant='body2'>
-          {row.cit_code || '-'}
-        </Typography>
-      )
-    },
-    {
-      id: 'contact',
-      label: 'Contacto',
-      minWidth: 180,
-      render: row => (
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          {row.cus_phone && (
-            <Typography variant='body2' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Icon icon='tabler:phone' fontSize={14} />
-              {row.cus_phone}
-            </Typography>
-          )}
-          {row.cus_email && (
-            <Typography variant='caption' color='text.secondary' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Icon icon='tabler:mail' fontSize={12} />
-              {row.cus_email}
-            </Typography>
-          )}
-          {!row.cus_phone && !row.cus_email && (
-            <Typography variant='caption' color='text.disabled'>
-              No disponible
-            </Typography>
-          )}
-        </Box>
       )
     }
   ]
@@ -339,68 +314,6 @@ const MasterClientsPage = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
           headerAction={
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap', flex: 1, justifyContent: 'flex-end' }}>
-              {/* Selector Clase 1 */}
-              <Box sx={{ width: 140 }}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  size='small'
-                  label='Clase 1'
-                  value={tp1}
-                  onChange={e => handleTp1Change(e.target.value)}
-                  SelectProps={{ displayEmpty: true }}
-                >
-                  <MenuItem value=''>Todas</MenuItem>
-                  {tp1Options.map(opt => (
-                    <MenuItem key={opt.code} value={opt.code}>
-                      {opt.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Box>
-
-              {/* Selector Clase 2 */}
-              <Box sx={{ width: 180 }}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  size='small'
-                  label='Clase 2 (Sucursal)'
-                  value={tp2}
-                  disabled={!tp1 && tp2Options.length === 0}
-                  onChange={e => handleTp2Change(e.target.value)}
-                  SelectProps={{ displayEmpty: true }}
-                >
-                  <MenuItem value=''>Todas</MenuItem>
-                  {tp2Options.map(opt => (
-                    <MenuItem key={opt.code} value={opt.code}>
-                      {opt.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Box>
-
-              {/* Selector Clase 3 */}
-              <Box sx={{ width: 180 }}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  size='small'
-                  label='Clase 3 (Ciudad)'
-                  value={cit}
-                  disabled={!tp2 && citOptions.length === 0}
-                  onChange={e => handleCitChange(e.target.value)}
-                  SelectProps={{ displayEmpty: true }}
-                >
-                  <MenuItem value=''>Todas</MenuItem>
-                  {citOptions.map(opt => (
-                    <MenuItem key={opt.code} value={opt.code}>
-                      {opt.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Box>
-
               {/* Checkbox Sin Código CEP */}
               <FormControlLabel
                 control={
@@ -414,10 +327,182 @@ const MasterClientsPage = () => {
                 label={<Typography variant='body2'>Sin Código CEP</Typography>}
                 sx={{ ml: 2, mr: 0 }}
               />
+
+              {/* Botón de Más Filtros */}
+              <Button
+                variant='outlined'
+                startIcon={<Icon icon='tabler:adjustments-horizontal' />}
+                onClick={() => setIsFilterModalOpen(true)}
+              >
+                Más Filtros
+              </Button>
             </Box>
           }
         />
       </Card>
+
+      {/* Modal de Filtros Adicionales */}
+      <Dialog open={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} maxWidth='md' fullWidth>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant='h6' sx={{ fontWeight: 600 }}>Más Filtros Generales</Typography>
+          <IconButton onClick={() => setIsFilterModalOpen(false)}>
+            <Icon icon='tabler:x' />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={4} sx={{ mt: 1, mb: 1 }}>
+            {/* Clase 1 */}
+            <Grid item xs={12} sm={6} md={4}>
+              <CustomTextField
+                select
+                fullWidth
+                size='small'
+                label='Clase 1'
+                value={tp1}
+                onChange={e => handleTp1Change(e.target.value)}
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Todas</MenuItem>
+                {tp1Options.map(opt => (
+                  <MenuItem key={opt.code} value={opt.code}>
+                    {opt.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            {/* Clase 2 */}
+            <Grid item xs={12} sm={6} md={4}>
+              <CustomTextField
+                select
+                fullWidth
+                size='small'
+                label='Clase 2 (Sucursal)'
+                value={tp2}
+                disabled={!tp1 && tp2Options.length === 0}
+                onChange={e => handleTp2Change(e.target.value)}
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Todas</MenuItem>
+                {tp2Options.map(opt => (
+                  <MenuItem key={opt.code} value={opt.code}>
+                    {opt.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            {/* Clase 3 */}
+            <Grid item xs={12} sm={6} md={4}>
+              <CustomTextField
+                select
+                fullWidth
+                size='small'
+                label='Clase 3 (Ciudad)'
+                value={cit}
+                disabled={!tp2 && citOptions.length === 0}
+                onChange={e => handleCitChange(e.target.value)}
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Todas</MenuItem>
+                {citOptions.map(opt => (
+                  <MenuItem key={opt.code} value={opt.code}>
+                    {opt.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            {/* Código FQ */}
+            <Grid item xs={12} sm={6} md={4}>
+              <CustomTextField
+                select
+                fullWidth
+                size='small'
+                label='Código FQ'
+                value={codigoFq}
+                onChange={e => handleCodigoFqChange(e.target.value)}
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Todos</MenuItem>
+                {fqOptions.map(opt => (
+                  <MenuItem key={opt.code} value={opt.code}>
+                    {opt.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            {/* Grupo de Vendedor */}
+            <Grid item xs={12} sm={6} md={4}>
+              <CustomTextField
+                select
+                fullWidth
+                size='small'
+                label='Grupo de Vendedor'
+                value={grupoVendedor}
+                onChange={e => handleGrupoVendedorChange(e.target.value)}
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Todos</MenuItem>
+                {vgOptions.map(opt => (
+                  <MenuItem key={opt.code} value={opt.code}>
+                    {opt.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            {/* Oficina */}
+            <Grid item xs={12} sm={6} md={4}>
+              <CustomTextField
+                select
+                fullWidth
+                size='small'
+                label='Oficina'
+                value={oficina}
+                onChange={e => handleOficinaChange(e.target.value)}
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Todas</MenuItem>
+                {officeOptions.map(opt => (
+                  <MenuItem key={opt.code} value={opt.code}>
+                    {opt.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            {/* Territorio */}
+            <Grid item xs={12} sm={6} md={4}>
+              <CustomTextField
+                select
+                fullWidth
+                size='small'
+                label='Territorio'
+                value={territorio}
+                onChange={e => handleTerritorioChange(e.target.value)}
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Todos</MenuItem>
+                {territoryOptions.map(opt => (
+                  <MenuItem key={opt.code} value={opt.code}>
+                    {opt.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions sx={{ pb: 5, px: 6 }}>
+          <Button variant='contained' onClick={() => setIsFilterModalOpen(false)}>
+            Aplicar Filtros
+          </Button>
+          <Button variant='tonal' color='secondary' onClick={handleResetAllFilters}>
+            Limpiar Filtros
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

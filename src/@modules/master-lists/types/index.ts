@@ -56,5 +56,9 @@ export interface FilterOptionsResponse {
     tp1_codes: FilterOption[]
     tp2_codes: FilterOption[]
     cit_codes: FilterOption[]
+    fq_codes: FilterOption[]
+    vendor_groups: FilterOption[]
+    offices: FilterOption[]
+    territories: FilterOption[]
   }
 }

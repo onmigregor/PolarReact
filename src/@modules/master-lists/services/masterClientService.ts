@@ -10,6 +10,10 @@ interface GetAllParams {
   tp2_code?: string
   cit_code?: string
   has_cep?: boolean | string
+  codigo_fq?: string
+  grupo_vendedor?: string
+  oficina?: string
+  territorio?: string
 }
 
 interface GetFiltersParams {
