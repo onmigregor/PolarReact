@@ -24,6 +24,11 @@ const navigation = (): VerticalNavItemsType => {
           path: '/master-lists/clients'
         }
       ]
+    },
+    {
+      title: 'Reporte de Cargas',
+      icon: 'tabler:file-import',
+      path: '/reportes-carga'
     }
   ]
 }
